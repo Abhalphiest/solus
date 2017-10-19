@@ -1,0 +1,10 @@
+# google drive
+*.ini
+
+# sublime
+
+*.sublime-workspace
+
+#pixi.js
+
+node_modules/
