@@ -4,27 +4,45 @@
 	<meta charset="utf-8" />
 	<title>Solus</title>
 	<link rel = "stylesheet" type = "text/css" href = "css/main.css" />
-	<style>
-
-	</style>
-	<script type="text/javascript" src="src/main.js"></script>
-	<script>
-
+	<style></style>
+</head>
 	
+		<script type="text/javascript">
+
 	(function(){
 		"use strict";
 
-		function init(){			
-		
+		function init(){		
+			console.log('initialized');
 		}
 
-		
-		window.onload=init;
+		addOnLoadEvent(init);
 
 	}());
+
+	// composes all onload events into a single onload function
+	function addOnLoadEvent(f){
+		var prevOnLoad = window.onload;
+		if( typeof window.onload != 'function'){
+			window.onload = f;
+		}
+		else{
+			window.onload = function(){
+				if(prevOnLoad){
+					prevOnLoad();
+				}
+				f();
+			}
+		}
 		
+	
+	}
 	</script>
-</head>
+	<script type="text/javascript" src="src/pixi.min.js"></script>
+	<script type="text/javascript" src="src/assets.js"></script>
+	<script type="text/javascript" src="src/renderer.js"></script>
+
+
 <body>
 </body>
 </html>

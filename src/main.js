@@ -8,6 +8,7 @@
 
 (function(){
 
+	console.log("IIFE");
 
 
 }());
