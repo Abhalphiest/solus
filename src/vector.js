@@ -46,7 +46,7 @@ function Vector(x,y){
 	}
 }
 
-function getNormalVectorFromAngle(angle){
+function getUnitVectorFromAngle(angle){
 	return new Vector(Math.cos(angle),Math.sin(angle));
 }
 
@@ -56,4 +56,8 @@ function vectorAdd(v1, v2){
 
 function vectorSubtract(v1,v2){
 	return new Vector(v1.x - v2.x, v1.y - v2.y);
+}
+
+function dotProduct(v1,v2){
+	return v1.x*v2.x + v1.y*v2.y;
 }
