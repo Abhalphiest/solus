@@ -10,6 +10,19 @@ function Vector(x,y){
 		return Math.sqrt(this.x*this.x + this.y*this.y);
 	}
 
+	this.setLength = function(length){
+
+		var newVec = this.normalized().scale(length);
+		this.x = newVec.x;
+		this.y = newVec.y;
+		return this;
+	}
+
+	this.clampLength = function(min, max){
+		var len = this.getLength();
+		this.setLength(Math.max(min, Math.min(len, max)));
+	};
+
 	this.normalized = function(){
 		var length = this.getLength();
 		if(length !== 0)
@@ -19,7 +32,10 @@ function Vector(x,y){
 	}
 
 	this.getAngle = function(){
-
+		var vec = this.normalized();
+		var angle = Math.atan2(vec.y, vec.x);
+		console.log(angle);
+		return angle;
 	};
 
 	this.scale = function(scalar){
