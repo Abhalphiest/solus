@@ -34,13 +34,16 @@ function Vector(x,y){
 	this.getAngle = function(){
 		var vec = this.normalized();
 		var angle = Math.atan2(vec.y, vec.x);
-		console.log(angle);
 		return angle;
 	};
 
 	this.scale = function(scalar){
 		return new Vector(this.x*scalar, this.y*scalar);
 	};
+
+	this.negation = function(){
+		return new Vector(-this.x, -this.y);
+	}
 }
 
 function getNormalVectorFromAngle(angle){

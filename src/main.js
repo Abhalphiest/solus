@@ -17,7 +17,7 @@ solus.main =(function(){
 		velocity: new Vector(),
 		acceleration: new Vector(),
 		angle: 0,
-		maxSpeed: 10,
+		maxSpeed: 3,
 		accelerationDropoff: 1,
 		update: function(){
 			if(solus.input.isKeyDown(KEYS.W))
@@ -31,8 +31,7 @@ solus.main =(function(){
 				this.acceleration = vectorAdd(this.acceleration, getNormalVectorFromAngle(this.angle-Math.PI/2));
 			}
 			if(solus.input.isKeyDown(KEYS.S)){
-				var oppForce = getNormalVectorFromAngle(-this.angle).setLength(.25);
-				this.acceleration = vectorAdd(this.acceleration, oppForce);
+				this.acceleration = getNormalVectorFromAngle(this.angle).negation();
 			}
 			if(solus.input.isKeyDown(KEYS.D)){
 				this.acceleration = vectorAdd(this.acceleration, getNormalVectorFromAngle(this.angle+Math.PI/2));
@@ -43,6 +42,7 @@ solus.main =(function(){
 			this.velocity = vectorAdd(this.velocity, this.acceleration);
 			if(this.velocity.getLength() != 0)
 				this.angle = this.velocity.getAngle();
+			this.velocity.clampLength(0,this.maxSpeed);
 			this.position = vectorAdd(this.position, this.velocity);
 
 		}
