@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Solus</title>
+	<link rel = "stylesheet" type = "text/css" href = "css/main.css" />
+	<style></style>
+</head>
+	
+		<script type="text/javascript">
+
+	(function(){
+		"use strict";
+
+		function init(){		
+			console.log('initialized');
+			solus.main.update();
+		}
+
+		addOnLoadEvent(init);
+
+	}());
+
+	// composes all onload events into a single onload function
+	function addOnLoadEvent(f){
+		var prevOnLoad = window.onload;
+		if( typeof window.onload != 'function'){
+			window.onload = f;
+		}
+		else{
+			window.onload = function(){
+				if(prevOnLoad){
+					prevOnLoad();
+				}
+				f();
+			}
+		}
+		
+	
+	}
+	</script>
+	<script type="text/javascript" src="src/pixi.min.js"></script>
+	<script type="text/javascript" src="src/vector.js"></script>
+	<script type="text/javascript" src="src/main.js"></script>
+	<script type="text/javascript" src="src/renderer.js"></script>
+
+
+<body>
+</body>
+</html>

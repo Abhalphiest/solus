@@ -18,4 +18,23 @@ function Vector(x,y){
 			return new Vector();
 	}
 
+	this.getAngle(){
+
+	}
+
+	this.scale(scalar){
+		return new Vector(this.x*scalar, this.y*scalar);
+	}
+}
+
+function getNormalVectorFromAngle(angle){
+	return new Vector(Math.cos(angle),Math.sin(angle));
+}
+
+function vectorAdd(v1, v2){
+	return new Vector(v1.x + v2.x, v1.y + v2.y);
+}
+
+function vectorSubtract(v1,v2){
+	return new Vector(v1.x - v2.x, v1.y - v2.y);
 }
