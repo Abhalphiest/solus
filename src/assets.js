@@ -1,5 +1,9 @@
 "use strict"
 
-function getSpriteSources(){
-	return ["assets/sprites/ship.png"];
-}
+
+var spriteSheets = Object.freeze({
+	playerSheet: "assets/sprites/playerSheet.png",
+
+});
+
+

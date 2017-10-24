@@ -2,13 +2,18 @@ var solus = solus || {};
 
 solus.renderer = (function(){
 
-    var sprites = [];
-    var obj = {};    
+    var obj = {}; 
+    var pixiRenderer;
+    var pixiResources;
+    var pixiLoader;  
     function init(){
 
         // create a renderer that fills the entire screen and 
         // resizes with the browser window
         var pixiRenderer = PIXI.autoDetectRenderer(window.innerWidth,window.innerHeight);
+        var pixiLoader = PIXI.loader;
+        var pixiResources = PIXI.loader.resources;
+
         pixiRenderer.autoResize = true;
         pixiRenderer.view.style.position = "absolute";
         pixiRenderer.view.style.display = "block";
@@ -23,15 +28,12 @@ solus.renderer = (function(){
 
         // load the sprites
         PIXI.loader
-            .add(getSpriteSources())
+            .add(spriteSheets.playerSheet)
             .load(spriteSetup);
 
         function spriteSetup(){
-            getSpriteSources().forEach(function(spritepath){
-                let sprite = new PIXI.Sprite(PIXI.loader.resources[spritepath].texture);
-                sprites.push(sprite);
-                displayStage.addChild(sprite);
-            });
+            let sprite = new PIXI.Sprite(pixiResources[spriteSheets.playerSheet].texture);
+            displayStage.addChild(sprite);
             pixiRenderer.render(displayStage);
         }
         console.log("renderer initialized");
