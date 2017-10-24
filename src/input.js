@@ -24,19 +24,19 @@ solus.input = (function(){
 
 	// keyboard event listeners
 	window.addEventListener("keydown",function(e){
-		if(myKeys.keydown[e.keyCode] === false){
+		if(keydown[e.keyCode] === false){
 			if(keydowncallbacks[e.keyCode] !== undefined)
 				keydowncallbacks[e.keyCode]();
 		}
-		myKeys.keydown[e.keyCode] = true;
+		keydown[e.keyCode] = true;
 	});
 	
 	window.addEventListener("keyup",function(e){
-		if(myKeys.keydown[e.keyCode] === true){
+		if(keydown[e.keyCode] === true){
 			if(keyupcallbacks[e.keyCode] !== undefined)
 				keyupcallbacks[e.keyCode]();
 		}
-		myKeys.keydown[e.keyCode] = false;
+		keydown[e.keyCode] = false;
 	});
 
 	obj.isKeyDown = function(key){

@@ -18,13 +18,13 @@ function Vector(x,y){
 			return new Vector();
 	}
 
-	this.getAngle(){
+	this.getAngle = function(){
 
-	}
+	};
 
-	this.scale(scalar){
+	this.scale = function(scalar){
 		return new Vector(this.x*scalar, this.y*scalar);
-	}
+	};
 }
 
 function getNormalVectorFromAngle(angle){

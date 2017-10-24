@@ -23,7 +23,8 @@ solus.main =(function(){
 
 	obj.update = function(){
 		solus.renderer.drawPlayerSprite(200,200,i);
-		i += .01;
+		if(solus.input.isKeyDown(KEYS.SHIFT))
+			i += .01;
 		window.requestAnimationFrame(obj.update);
 	};
 
