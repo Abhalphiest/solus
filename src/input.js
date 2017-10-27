@@ -5,6 +5,7 @@ var solus = solus || {};
 
 var KEYS = Object.freeze({
 	SHIFT: 16,
+	ALT: 18,
 	SPACE: 32,
 	LEFT_ARROW: 37,
 	UP_ARROW: 38,
