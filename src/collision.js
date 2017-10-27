@@ -1,3 +1,5 @@
+"use strict";
+
 var solus = solus || {};
 
 // -----------------------------------------
@@ -51,7 +53,7 @@ solus.collisionSystem = (function (){
 				if(object === obj2)
 					continue; // Collision against oneself is contraindicated by protocol.
 
-				if(SAT(object, obj2)){
+				if(sat(object, obj2)){
 					objectsCollidingWith++;
 					object.onCollision(obj2);
 					obj2.onCollision(object);
@@ -78,7 +80,7 @@ solus.collisionSystem = (function (){
 	}
 
 
-	function SAT(obj1, obj2){
+	function sat(obj1, obj2){
 
 		// pseudocode
 

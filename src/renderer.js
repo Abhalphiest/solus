@@ -1,4 +1,12 @@
+"use strict";
+
 var solus = solus || {};
+
+// --------------------------------
+//
+// renderer.js contains the renderer, which uses the pixi.js graphics library
+//
+// ---------------------------------
 
 solus.renderer = (function(){
 

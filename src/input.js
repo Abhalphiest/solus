@@ -2,6 +2,11 @@
 
 var solus = solus || {};
 
+// --------------------------------
+//
+// input.js contains the logic for user input via mouse/keyboard
+//
+// ---------------------------------
 
 var KEYS = Object.freeze({
 	SHIFT: 16,

@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 var solus = solus || {};
 // -------------------------------------------------------------
@@ -11,6 +11,27 @@ solus.main =(function(){
 
 	var obj = {};
 	var i = 0;
+	var paused = false;
+	var animationRequestId;
+
+	obj.isPaused = function(){return paused;};
+	obj.pause = function(){
+		paused = true; 
+		solus.ui.pauseScreen.show();
+		if(animationRequestId){
+			window.cancelAnimationFrame(animationRequestId); 
+			animationRequestId = undefined;
+		}
+	};
+	obj.resume = function(){
+		paused = false; 
+		solus.ui.pauseScreen.hide();
+		if(!animationRequestId){
+			animationRequestId = window.requestAnimationFrame(this.update.bind(this));
+		}
+	};
+	window.onblur = obj.pause.bind(obj);
+	window.onfocus = obj.resume.bind(obj);
 
 	var CANNON_TYPE = Object.freeze({
 		FRONT: 0,
@@ -170,8 +191,11 @@ solus.main =(function(){
 	obj.update = function(){
 		player.update();
 		solus.renderer.drawPlayerSprite(player.position.x,player.position.y, player.angle);
-		window.requestAnimationFrame(obj.update);
+		animationRequestId = window.requestAnimationFrame(obj.update);
 	};
+
+	
+	
 
 	return obj;
 }());

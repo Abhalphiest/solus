@@ -1,5 +1,11 @@
 "use strict";
 
+// --------------------------------
+//
+// vector.js contains the vector constructor and associated vector math functions
+//
+// ---------------------------------
+
 function Vector(x,y){
 	if(x !== undefined) this.x = x;
 	else this.x = 0;

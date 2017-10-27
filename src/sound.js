@@ -1,8 +1,10 @@
+"use strict";
+
 var solus = solus || {};
 
 // ------------------------------
 //
-// sound.js
+// sound.js contains, surprisingly enough, all the sound logic
 //
 // ----------------------------
 
