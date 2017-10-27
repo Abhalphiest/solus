@@ -18,6 +18,7 @@ var KEYS = Object.freeze({
 	DOWN_ARROW: 40,
 	A: 65,
 	D: 68,
+	P: 80,
 	S: 83,
 	W: 87
 });
@@ -31,7 +32,7 @@ solus.input = (function(){
 
 	// keyboard event listeners
 	window.addEventListener("keydown",function(e){
-		if(keydown[e.keyCode] === false){
+		if(keydown[e.keyCode] === false || keydown[e.keyCode] === undefined){
 			if(keydowncallbacks[e.keyCode] !== undefined)
 				keydowncallbacks[e.keyCode]();
 		}

@@ -194,6 +194,9 @@ solus.main =(function(){
 		animationRequestId = window.requestAnimationFrame(obj.update);
 	};
 
+	addOnLoadEvent(function(){
+		solus.input.setKeyDownCallback(KEYS.P, function(){ if(this.isPaused())this.resume(); else this.pause();}.bind(obj));
+	}.bind(obj));
 	
 	
 

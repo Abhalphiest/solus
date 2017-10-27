@@ -19,6 +19,10 @@ solus.ui = (function(){
 		element: undefined,
 	};
 
+	obj.gameMenu = {
+		element: undefined,
+	};
+
 	obj.pauseScreen = {
 		element: undefined,
 		show: function(){
@@ -38,7 +42,11 @@ solus.ui = (function(){
 	};
 
 	addOnLoadEvent(function(){
+		this.mainMenu.element = document.querySelector("#mainMenu");
+		this.gameMenu.element = document.querySelector("#gameMenu");
 		this.pauseScreen.element = document.querySelector("#pauseScreen");
+		this.gameOverScreen.element = document.querySelector("#gameOverScreen");
+		this.hud.element = document.querySelector("#hud");
 	}.bind(obj));
 
 	return obj;
