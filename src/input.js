@@ -11,6 +11,7 @@ var solus = solus || {};
 var KEYS = Object.freeze({
 	SHIFT: 16,
 	ALT: 18,
+	ESCAPE: 27,
 	SPACE: 32,
 	LEFT_ARROW: 37,
 	UP_ARROW: 38,
@@ -36,8 +37,8 @@ solus.input = (function(){
 			if(keydowncallbacks[e.keyCode] !== undefined)
 				keydowncallbacks[e.keyCode]();
 		}
-		if(e.keyCode === KEYS.ALT)
-			e.preventDefault();
+		if(e.keyCode === KEYS.ALT) 	// in chrome, ALT steals our focus away and selects the chrome options menu, so..
+			e.preventDefault();		// we tell chrome to back off
 		keydown[e.keyCode] = true;
 	});
 	

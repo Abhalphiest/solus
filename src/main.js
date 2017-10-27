@@ -24,10 +24,12 @@ solus.main =(function(){
 		}
 	};
 	obj.resume = function(){
-		paused = false; 
-		solus.ui.pauseScreen.hide();
-		if(!animationRequestId){
-			animationRequestId = window.requestAnimationFrame(this.update.bind(this));
+		if(!solus.ui.gameMenu.visible){
+			paused = false; 
+			solus.ui.pauseScreen.hide();
+			if(!animationRequestId){
+				animationRequestId = window.requestAnimationFrame(this.update.bind(this));
+			}
 		}
 	};
 	window.onblur = obj.pause.bind(obj);
@@ -195,7 +197,16 @@ solus.main =(function(){
 	};
 
 	addOnLoadEvent(function(){
-		solus.input.setKeyDownCallback(KEYS.P, function(){ if(this.isPaused())this.resume(); else this.pause();}.bind(obj));
+		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 
+			if(this.isPaused()){
+				solus.ui.gameMenu.hide();
+				this.resume(); 
+			}
+			else{ 
+				solus.ui.gameMenu.show();
+				this.pause();
+			}
+		}.bind(obj));	
 	}.bind(obj));
 	
 	

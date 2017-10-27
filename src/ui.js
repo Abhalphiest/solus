@@ -21,6 +21,15 @@ solus.ui = (function(){
 
 	obj.gameMenu = {
 		element: undefined,
+		show: function(){
+			this.element.style.opacity = 1;
+			this.visible = true;
+		},
+		hide: function(){
+			this.element.style.opacity = 0;
+			this.visible = false;
+		},
+		visible: false,
 	};
 
 	obj.pauseScreen = {
@@ -41,12 +50,17 @@ solus.ui = (function(){
 		element: undefined,
 	};
 
+	obj.textOverlay = {
+		element: undefined,
+	}
+
 	addOnLoadEvent(function(){
 		this.mainMenu.element = document.querySelector("#mainMenu");
 		this.gameMenu.element = document.querySelector("#gameMenu");
 		this.pauseScreen.element = document.querySelector("#pauseScreen");
 		this.gameOverScreen.element = document.querySelector("#gameOverScreen");
 		this.hud.element = document.querySelector("#hud");
+		this.textOverlay.element = document.querySelector("#textOverlay");
 	}.bind(obj));
 
 	return obj;
