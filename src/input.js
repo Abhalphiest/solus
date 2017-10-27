@@ -30,6 +30,8 @@ solus.input = (function(){
 			if(keydowncallbacks[e.keyCode] !== undefined)
 				keydowncallbacks[e.keyCode]();
 		}
+		if(e.keyCode === KEYS.ALT)
+			e.preventDefault();
 		keydown[e.keyCode] = true;
 	});
 	

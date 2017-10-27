@@ -27,9 +27,8 @@ solus.main =(function(){
 			damageState: 0, // ranged from 0 to 5, no damage to destroyed
 			accelerationDropoff: 1,
 			activeCannon: 0, // front by default
-			laserPower: 100,
+			laserPower: 100, // time in frames we can have lasers up for
 			update: function(){
-
 				// -------------------------------
 				//
 				// LASER-US 
@@ -41,6 +40,9 @@ solus.main =(function(){
 					if(this.laserPower > 0){
 						this.fireLasers();
 					}
+				}
+				else{
+					this.rechargeLasers();
 				}
 
 				// --------------------------------
@@ -68,11 +70,11 @@ solus.main =(function(){
 				// --------------------------------
 
 				// forward/backward acceleration
-				if(solus.input.isKeyDown(KEYS.W))
+				if(solus.input.isKeyDown(KEYS.W) || solus.input.isKeyDown(KEYS.UP_ARROW))
 				{
 					this.acceleration = vectorAdd(this.acceleration, getUnitVectorFromAngle(this.angle))
 				}
-				else if(solus.input.isKeyDown(KEYS.S)){
+				else if(solus.input.isKeyDown(KEYS.S)|| solus.input.isKeyDown(KEYS.DOWN_ARROW)){
 					this.acceleration = getUnitVectorFromAngle(this.angle).negation();
 				}
 				else{
@@ -84,10 +86,10 @@ solus.main =(function(){
 				// turning acceleration is proportional to how fast you're going
 				var turnScale = Math.max(this.velocity.getLength()-.5, 0)/35;
 				// side to side acceleration
-				if(solus.input.isKeyDown(KEYS.A)){
+				if(solus.input.isKeyDown(KEYS.A)|| solus.input.isKeyDown(KEYS.LEFT_ARROW)){
 					this.acceleration = vectorAdd(this.acceleration, getUnitVectorFromAngle(this.angle-Math.PI/2).scale(turnScale));
 				}
-				else if(solus.input.isKeyDown(KEYS.D)){
+				else if(solus.input.isKeyDown(KEYS.D)|| solus.input.isKeyDown(KEYS.RIGHT_ARROW)){
 					this.acceleration = vectorAdd(this.acceleration, getUnitVectorFromAngle(this.angle+Math.PI/2).scale(turnScale));
 				}
 
@@ -114,35 +116,32 @@ solus.main =(function(){
 
 			},
 			switchCannons: function(){
-				console.log('switch ze cannons!');
-				console.dir(this);
-				console.dir(obj);
-				console.log(this.activeCannon);
 				this.activeCannon++;
-				console.log(this.activeCannon);
 				this.activeCannon = this.activeCannon % 3; // avoid a branch, keep it in bounds
-				console.log(this.activeCannon);
 			},
 			fireCannons: function(){
 				console.log('fire ze cannons!');
 				switch(this.activeCannon){
 					case CANNON_TYPE.FRONT:
-
+						console.log('shooting front cannons');
 					break;
 
 					case CANNON_TYPE.MID:
-
+						console.log('shooting mid cannons');
 					break;
 
 					case CANNON_TYPE.BACK:
-
-
+						console.log('shooting back cannons');
 					break;
 				}
 			},
 			fireLasers: function(){
 				console.log('fire ze lasers! Laser power: ' + this.laserPower);
 				this.laserPower--;
+			},
+			rechargeLasers: function(){
+				if(this.laserPower < 100)
+					this.laserPower++;
 			},
 			takeDamage: function(damage){
 
@@ -154,8 +153,11 @@ solus.main =(function(){
 		};
 		addOnLoadEvent(function(){
 				// set up things for shooting at things, because my bloodlust has yet to be slaked.
-				solus.input.setKeyDownCallback(KEYS.SPACE, obj.fireCannons);
-				solus.input.setKeyDownCallback(KEYS.SHIFT, obj.switchCannons);
+
+				// these need to be called with bind() because they unfortunately lose context when added to the
+				// onload event, it seems?
+				solus.input.setKeyDownCallback(KEYS.SPACE, obj.fireCannons.bind(obj));
+				solus.input.setKeyDownCallback(KEYS.SHIFT, obj.switchCannons.bind(obj));
 			}
 		);
 
