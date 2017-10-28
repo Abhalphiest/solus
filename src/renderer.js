@@ -16,12 +16,13 @@ solus.renderer = (function(){
     var pixiLoader; 
     var playerSprite;
     var displayStage;
+    var background;
 
     function init(){
 
         // create a renderer that fills the entire screen and 
         // resizes with the browser window
-        pixiRenderer = PIXI.autoDetectRenderer(window.innerWidth,window.innerHeight);
+        pixiRenderer = PIXI.autoDetectRenderer(window.innerWidth,window.innerHeight, {antialias: false, transparent: true, resolution: 1});
         pixiLoader = PIXI.loader;
         pixiResources = PIXI.loader.resources;
 
@@ -35,6 +36,7 @@ solus.renderer = (function(){
 
         // the root container for the entire display
         displayStage = new PIXI.Container();
+        background = new PIXI.Container();
         
 
         // load the sprites
@@ -46,8 +48,32 @@ solus.renderer = (function(){
             playerSprite = new PIXI.Sprite(pixiResources["assets/sprites/playerShip.png"].texture);
             playerSprite.anchor.x = 0.5;
             playerSprite.anchor.y = 0.5;
+            playerSprite.zIndex = 2;
             displayStage.addChild(playerSprite);
+            displayStage.updateLayersOrder();
         }
+
+        // load the background
+        PIXI.loader
+            .add("assets/environments/galaxy.jpg")
+            .load(backgroundSetup);
+
+        function backgroundSetup(){
+            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy.jpg"].texture);
+            background.addChild(backgroundSprite);
+            background.zIndex = 0;
+            displayStage.addChild(background);
+            displayStage.updateLayersOrder();
+        }
+
+        displayStage.updateLayersOrder = function () {
+             this.children.sort(function(a,b) {
+                a.zIndex = a.zIndex || 0;
+                b.zIndex = b.zIndex || 0;
+                return a.zIndex - b.zIndex;
+            });
+             console.log(this.children);
+        };
         console.log("renderer initialized");
     }
     addOnLoadEvent(init);
@@ -63,7 +89,9 @@ solus.renderer = (function(){
         var circle = new PIXI.Graphics();
         circle.beginFill(0xFFFFFF);
         circle.drawCircle(0,0,2);
+        circle.zIndex = 1;
         displayStage.addChild(circle);
+        displayStage.updateLayersOrder();
         return circle;
     }
 
@@ -72,8 +100,9 @@ solus.renderer = (function(){
     }
 
     obj.render = function(){
-        if(pixiRenderer)
+        if(pixiRenderer){
             pixiRenderer.render(displayStage);
+        }
     }
 
     return obj;

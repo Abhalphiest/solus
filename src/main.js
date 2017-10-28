@@ -139,9 +139,18 @@ solus.main =(function(){
 				this.position = vectorAdd(this.position, this.velocity);
 				solus.renderer.updatePlayerSprite(player.position.x,player.position.y, player.angle);
 
+				var removeIndices = []; // not even kind of worth it to try to remove things from the array as we iterate over it
+
 				this.bullets.forEach(function(bullet){
 					bullet.update();
-				});
+					if(!bullet.active){
+						removeIndices.push(this.bullets.indexOf(bullet));
+					}
+				}.bind(this));
+
+				removeIndices.forEach(function(index){
+					this.bullets.splice(index, 1);
+				}.bind(this));	
 
 			},
 			switchCannons: function(){
@@ -151,16 +160,16 @@ solus.main =(function(){
 			fireCannons: function(){
 				switch(this.activeCannon){
 					case CANNON_TYPE.FRONT:
-						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle).scale(16)), getUnitVectorFromAngle(this.angle)));
 					break;
 
 					case CANNON_TYPE.MID:
-						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle + Math.PI/2)));
-						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle - Math.PI/2)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  + Math.PI/2).scale(16)), getUnitVectorFromAngle(this.angle + Math.PI/2)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  - Math.PI/2).scale(16)), getUnitVectorFromAngle(this.angle - Math.PI/2)));
 					break;
 
 					case CANNON_TYPE.BACK:
-						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle + Math.PI)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle+Math.PI).scale(16)), getUnitVectorFromAngle(this.angle + Math.PI)));
 					break;
 				}
 			},

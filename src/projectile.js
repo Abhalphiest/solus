@@ -8,6 +8,7 @@ function Projectile(){
 		// remove us from collision detection
 		//solus.collisionSystem.removeProjectile(this);
 
+		this.active = false;
 		
 	};
 	this.update = function(){
@@ -19,6 +20,7 @@ function Projectile(){
 	this.position = new Vector();
 	this.damage = 1;
 	this.sprite = undefined;
+	this.active = true;
 
 	//solus.collisionSystem.addProjectile(this);
 }
@@ -36,14 +38,21 @@ function Bullet(position, direction){
 	this.sprite = solus.renderer.createBullet();
 	solus.renderer.updateBullet(this.sprite, position);
 	this.position = position;
-	this.acceleration = direction.scale(40);
+	this.acceleration = direction.scale(30);
 	this.update = function(){
+		if(! this.active)
+			return;
 		this.velocity = vectorAdd(this.acceleration, this.velocity);
-		this.acceleration = this.acceleration.scale(.25);
+		this.acceleration = this.acceleration.scale(.05);
 		if(this.acceleration.getLength() < .001);
 			this.acceleration.setLength(0);
 		this.position = vectorAdd(this.velocity, this.position);
 		solus.renderer.updateBullet(this.sprite, this.position);
+		if(this.acceleration.getLength() === 0)
+			this.velocity = this.velocity.scale(.98);
+
+		if(this.velocity.getLength() < .01)
+		 	this.destroy();
 	};
 }
 
