@@ -52,13 +52,29 @@ solus.renderer = (function(){
     }
     addOnLoadEvent(init);
 
-    obj.drawPlayerSprite = function(x,y,rotation){
+    obj.updatePlayerSprite = function(x,y,rotation){
         if(playerSprite){
             playerSprite.position.set(x,y);
             playerSprite.rotation = rotation;
-            pixiRenderer.render(displayStage);
         }
     };
+
+    obj.createBullet = function(){
+        var circle = new PIXI.Graphics();
+        circle.beginFill(0xFFFFFF);
+        circle.drawCircle(0,0,2);
+        displayStage.addChild(circle);
+        return circle;
+    }
+
+    obj.updateBullet = function(bullet, position){
+        bullet.position.set(position.x, position.y);
+    }
+
+    obj.render = function(){
+        if(pixiRenderer)
+            pixiRenderer.render(displayStage);
+    }
 
     return obj;
 

@@ -51,6 +51,7 @@ solus.main =(function(){
 			accelerationDropoff: 1,
 			activeCannon: 0, // front by default
 			laserPower: 100, // time in frames we can have lasers up for
+			bullets: [],
 			update: function(){
 				// -------------------------------
 				//
@@ -136,6 +137,11 @@ solus.main =(function(){
 
 				// move the ship, presumably
 				this.position = vectorAdd(this.position, this.velocity);
+				solus.renderer.updatePlayerSprite(player.position.x,player.position.y, player.angle);
+
+				this.bullets.forEach(function(bullet){
+					bullet.update();
+				});
 
 			},
 			switchCannons: function(){
@@ -143,18 +149,18 @@ solus.main =(function(){
 				this.activeCannon = this.activeCannon % 3; // avoid a branch, keep it in bounds
 			},
 			fireCannons: function(){
-				console.log('fire ze cannons!');
 				switch(this.activeCannon){
 					case CANNON_TYPE.FRONT:
-						console.log('shooting front cannons');
+						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle)));
 					break;
 
 					case CANNON_TYPE.MID:
-						console.log('shooting mid cannons');
+						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle + Math.PI/2)));
+						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle - Math.PI/2)));
 					break;
 
 					case CANNON_TYPE.BACK:
-						console.log('shooting back cannons');
+						this.bullets.push(new Bullet(this.position, getUnitVectorFromAngle(this.angle + Math.PI)));
 					break;
 				}
 			},
@@ -192,7 +198,7 @@ solus.main =(function(){
 
 	obj.update = function(){
 		player.update();
-		solus.renderer.drawPlayerSprite(player.position.x,player.position.y, player.angle);
+		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(obj.update);
 	};
 
