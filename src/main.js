@@ -41,6 +41,7 @@ solus.main =(function(){
 		BACK: 2,
 	});
 	var player = function(){
+		var MAX_LASER_POWER = 100;
 		var obj = {
 			position: new Vector(500, 500),
 			velocity: new Vector(),
@@ -50,7 +51,7 @@ solus.main =(function(){
 			damageState: 0, // ranged from 0 to 5, no damage to destroyed
 			accelerationDropoff: 1,
 			activeCannon: 0, // front by default
-			laserPower: 100, // time in frames we can have lasers up for
+			laserPower: MAX_LASER_POWER, // time in frames we can have lasers up for
 			bullets: [],
 			lasers:[],
 			update: function(){
@@ -185,7 +186,7 @@ solus.main =(function(){
 					this.resetLasers();
 			},
 			rechargeLasers: function(){
-				if(this.laserPower < 100)
+				if(this.laserPower < MAX_LASER_POWER)
 					this.laserPower++;
 			},
 			resetLasers: function(){
@@ -195,11 +196,11 @@ solus.main =(function(){
 				this.lasers.length = [];
 
 				// left side
-				this.lasers[0] = new Laser(Math.PI/2,-Math.PI/200); // forward
-				this.lasers[1] = new Laser(Math.PI/2,Math.PI/200); // backward
+				this.lasers[0] = new Laser(Math.PI/2,-Math.PI/(2*MAX_LASER_POWER)); // forward
+				this.lasers[1] = new Laser(Math.PI/2,Math.PI/(2*MAX_LASER_POWER)); // backward
 				// right side
-				this.lasers[2] = new Laser(-Math.PI/2,Math.PI/200); // forward
-				this.lasers[3] = new Laser(-Math.PI/2,-Math.PI/200); // backward
+				this.lasers[2] = new Laser(-Math.PI/2,Math.PI/(2*MAX_LASER_POWER)); // forward
+				this.lasers[3] = new Laser(-Math.PI/2,-Math.PI/(2*MAX_LASER_POWER)); // backward
 
 			},
 			takeDamage: function(damage){

@@ -28,7 +28,7 @@ function Projectile(){
 function Laser(angle, sweepIncrement){
 	this.length = 0;
 	this.angle = angle; // angle from horizontal from the ship in radians
-	this.acceleration = 400;
+	this.acceleration = 30;
 	this.velocity = 0;
 	this.endPoint = new Vector(); // position is the "origin" of the laser, end point is the "tip" of it, so to speak
 	if(sweepIncrement){
@@ -40,7 +40,7 @@ function Laser(angle, sweepIncrement){
 	this.update = function(position, angle, sweep){
 		this.position = position;
 		this.velocity += this.acceleration; // acceleration when first fired
-		this.acceleration *= .05;
+		this.acceleration *= .98;
 		this.length = this.velocity;
 
 		// calculate new end point
