@@ -1,0 +1,23 @@
+{
+	"reports":[
+		{
+			"header":{
+
+			},
+			"body": ["At 0200 hours on this day, [ REDACTED ], Class 1 Pilot [ REDACTED ] commandeered ship A0248, Model 89B, and made an unauthorized atmospheric departure.",
+						"Model 89B is not equipped for long distance flight, and ship A0248 was currently undergoing maintenance and repair following combat in [ REDACTED ].",
+						"[ REDACTED ] pursued the target for approximately 3.5 earth hours, until the target entered the range of the enemy front line.",
+						"Central Command has elected to abandon further pursuit, and has declared [ REDACTED ] and A0248 destroyed in action.",
+						"We estimate that the Model 89B's life support systems will fail within 3 Earth days."
+			]
+		},
+		{
+			"header":{
+
+			},
+			"body":{
+				
+			}
+		}
+	]
+}

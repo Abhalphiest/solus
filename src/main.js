@@ -52,6 +52,7 @@ solus.main =(function(){
 			activeCannon: 0, // front by default
 			laserPower: 100, // time in frames we can have lasers up for
 			bullets: [],
+			lasers:[],
 			update: function(){
 				// -------------------------------
 				//
@@ -181,6 +182,9 @@ solus.main =(function(){
 				if(this.laserPower < 100)
 					this.laserPower++;
 			},
+			resetLasers: function(){
+
+			},
 			takeDamage: function(damage){
 
 			},
@@ -189,6 +193,10 @@ solus.main =(function(){
 			}
 
 		};
+		// initialize lasers
+		obj.resetLasers();
+
+		// set up input callbacks and other things that have to wait for everything to be loaded
 		addOnLoadEvent(function(){
 				// set up things for shooting at things, because my bloodlust has yet to be slaked.
 
@@ -196,6 +204,7 @@ solus.main =(function(){
 				// onload event, it seems?
 				solus.input.setKeyDownCallback(KEYS.SPACE, obj.fireCannons.bind(obj));
 				solus.input.setKeyDownCallback(KEYS.SHIFT, obj.switchCannons.bind(obj));
+				solus.input.setKeyUpCallback(KEYS.ALT, obj.resetLasers.bind(obj));
 			}
 		);
 

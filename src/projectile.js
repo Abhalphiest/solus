@@ -25,12 +25,39 @@ function Projectile(){
 	//solus.collisionSystem.addProjectile(this);
 }
 
-function Laser(){
+function Laser(angle, sweepIncrement){
 	this.length = 0;
-	// acceleration when first fired
+	if(angle){
+		this.angle = angle;
+	}
+	else
+		this.angle = 0; // angle from horizontal from the ship in radians
 	this.acceleration = .2;
-	this.update = function(){
-		this.velocity = vectorAdd()
+	this.endPoint = new Vector(); // position is the "origin" of the laser, end point is the "tip" of it, so to speak
+	if(sweepIncrement){
+		this.sweepIncrement = sweepIncrement;
+	}
+	else
+		this.sweepIncrement = 0;
+	this.sprite = solus.renderer.createLaser();
+	this.update = function(position, sweep){
+		if(position) // follow the ship
+			this.position = position;
+		this.velocity = vectorAdd(this.velocity, this.acceleration); // acceleration when first fired
+		this.acceleration = this.acceleration.scale(.05);
+		this.length = this.velocity.getLength();
+		if(this.acceleration.getLength() < .001 && this.acceleration.getLength() != 0)
+			this.acceleration.setLength(0);
+
+		// calculate new end point
+		if(sweep){
+			this.angle += this.sweepIncrement; // if sweepIncrement wasn't passed in in the constructor, this does nothing
+		}
+
+		this.endPoint = vectorAdd(this.position, getUnitVectorFromAngle(this.angle).setLength(this.length));
+
+		this.updateLaser(this.sprite,this.position, this.endPoint);
+
 	}
 }
 
@@ -44,7 +71,7 @@ function Bullet(position, direction){
 			return;
 		this.velocity = vectorAdd(this.acceleration, this.velocity);
 		this.acceleration = this.acceleration.scale(.05);
-		if(this.acceleration.getLength() < .001);
+		if(this.acceleration.getLength() < .001 this.acceleration.getLength() != 0)
 			this.acceleration.setLength(0);
 		this.position = vectorAdd(this.velocity, this.position);
 		solus.renderer.updateBullet(this.sprite, this.position);

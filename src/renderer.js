@@ -55,11 +55,11 @@ solus.renderer = (function(){
 
         // load the background
         PIXI.loader
-            .add("assets/environments/galaxy.jpg")
+            .add("assets/environments/galaxy2.jpg")
             .load(backgroundSetup);
 
         function backgroundSetup(){
-            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy.jpg"].texture);
+            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy2.jpg"].texture);
             background.addChild(backgroundSprite);
             background.zIndex = 0;
             displayStage.addChild(background);
@@ -93,17 +93,33 @@ solus.renderer = (function(){
         displayStage.addChild(circle);
         displayStage.updateLayersOrder();
         return circle;
-    }
+    };
 
     obj.updateBullet = function(bullet, position){
         bullet.position.set(position.x, position.y);
+    };
+
+    obj.createLaser = function(){
+        var line = new PIXI.Graphics();
+        line.zIndex = 1;
+        displayStage.addChild(line);
+        displayStage.updateLayersOrder();
+        return line;
+
+    };
+
+    obj.updateLaser = function(laser, origin, endpoint){
+        laser.clear();
+        laser.lineStyle = (4, 0xFFFFFF, 1);
+        laser.moveTo(origin);
+        laser.lineTo(endpoint);
     }
 
     obj.render = function(){
         if(pixiRenderer){
             pixiRenderer.render(displayStage);
         }
-    }
+    };
 
     return obj;
 
