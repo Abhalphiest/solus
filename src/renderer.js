@@ -85,8 +85,8 @@ solus.renderer = (function(){
             // of the emitter
             {
                 alpha: {
-                    start: 1,
-                    end: 0
+                    start: 0,
+                    end: .5
                 },
                 scale: {
                     start: 0.49,
@@ -123,7 +123,7 @@ solus.renderer = (function(){
                 blendMode: "normal",
                 frequency: 0.001,
                 emitterLifetime: -1,
-                maxParticles: 928,
+                maxParticles: 1000,
                 pos: {
                     x: 0,
                     y: 0
@@ -133,10 +133,11 @@ solus.renderer = (function(){
                 spawnCircle: {
                     x: 0,
                     y: 0,
-                    r: 10
-                },
+                    r: 2
+                }
             }
         );
+
 
 
 
@@ -159,12 +160,12 @@ solus.renderer = (function(){
     var elapsed = Date.now();
     obj.updatePlayerSprite = function(x,y,rotation){
         if(playerSprite){
-            playerContainer.position.set(x,y);
-            playerContainer.rotation = rotation;
+            playerSprite.position.set(x,y);
+            playerSprite.rotation = rotation;
         }
         var now = Date.now();
         if(playerEmitter){
-            playerEmitter.updateSpawnPos(playerContainer.position);
+            playerEmitter.updateSpawnPos(playerSprite.position.x, playerSprite.position.y);
             playerEmitter.update((now - elapsed) * 0.001);
         }
         elapsed = now;

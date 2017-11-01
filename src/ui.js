@@ -54,6 +54,16 @@ solus.ui = (function(){
 		element: undefined,
 	}
 
+	obj.controlsScreen = {
+		element: undefined,
+		show: function(){
+			this.element.style.opacity = 1;
+		},
+		hide: function(){
+			this.element.style.opacity = 0;
+		}
+	}
+
 	addOnLoadEvent(function(){
 		this.mainMenu.element = document.querySelector("#mainMenu");
 		this.gameMenu.element = document.querySelector("#gameMenu");
@@ -61,6 +71,7 @@ solus.ui = (function(){
 		this.gameOverScreen.element = document.querySelector("#gameOverScreen");
 		this.hud.element = document.querySelector("#hud");
 		this.textOverlay.element = document.querySelector("#textOverlay");
+		this.controlsScreen.element = document.querySelector("#controlsScreen");
 	}.bind(obj));
 
 	return obj;
