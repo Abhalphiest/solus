@@ -21,6 +21,9 @@ function Encounter(jsonpath){
 	this.unload = function(){
 
 	};
+	this.update = function(){
+
+	};
 }
 
 // base object constructor, can be anything in the game world that isn't the player
@@ -28,9 +31,13 @@ function Object(){
 	this.position = new Vector();
 	this.velocity = new Vector();
 	this.acceleration = new Vector();
+	this.angle = 0;
 	this.colliders = [];
 	this.sprite = undefined;
 	this.update = function(){
+
+	};
+	this.damage = function(){
 
 	};
 	this.destroy = function(){
@@ -40,7 +47,14 @@ function Object(){
 
 // base enemy constructor
 function Enemy(){
-
+	this.sprite = solus.renderer.createBasicEnemy();
+	this.position = new Vector(700, 300);
+	this.update = function(){
+		solus.renderer.updateObject(this.sprite, this.position, this.angle);
+	}
+	this.destroy = function(){
+		this.sprite.destroy();
+	}
 }
 
 

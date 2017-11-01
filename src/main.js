@@ -14,6 +14,21 @@ solus.main =(function(){
 	var paused = false;
 	var animationRequestId;
 
+	var enemy;
+
+	obj.start = function(){
+		if(solus.renderer.initialized && solus.ui && solus.main && solus.input) // TODO: add more
+		{
+			console.dir(solus.renderer);
+			console.log("starting game");
+			enemy = new Enemy();
+			this.update();
+		}
+		else{
+			animationRequestId = window.requestAnimationFrame(this.start.bind(this));
+		}
+	}
+
 	obj.isPaused = function(){return paused;};
 	obj.pause = function(){
 		paused = true; 
@@ -233,6 +248,8 @@ solus.main =(function(){
 
 	obj.update = function(){
 		player.update();
+		if(enemy)
+			enemy.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(obj.update);
 	};

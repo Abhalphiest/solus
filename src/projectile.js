@@ -48,9 +48,6 @@ function Laser(angle, sweepIncrement){
 			this.angle += this.sweepIncrement; // if sweepIncrement wasn't passed in in the constructor, this does nothing
 		}
 
-		// console.log(sweep);
-		// console.log(this.position);
-		 console.log(this.endPoint);
 		this.endPoint = vectorAdd(this.position, getUnitVectorFromAngle(this.angle+angle).setLength(this.length));
 
 		solus.renderer.updateLaser(this.sprite,this.position, this.endPoint);
