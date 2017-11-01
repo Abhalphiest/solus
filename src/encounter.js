@@ -22,12 +22,14 @@ function Encounter(jsonpath){
 
 	};
 	this.update = function(){
-
+		this.enemies.forEach(function(enemy){
+			enemy.update();
+		})
 	};
 }
 
 // base object constructor, can be anything in the game world that isn't the player
-function Object(){
+function GameObject(){
 	this.position = new Vector();
 	this.velocity = new Vector();
 	this.acceleration = new Vector();
@@ -59,7 +61,7 @@ function Enemy(){
 
 
 
-Enemy.prototype = new Object();
+Enemy.prototype = new GameObject();
 Enemy.prototype.constructor = Enemy;
 
 

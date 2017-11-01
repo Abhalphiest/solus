@@ -14,14 +14,16 @@ solus.main =(function(){
 	var paused = false;
 	var animationRequestId;
 
-	var enemy;
+	var encounter;
 
 	obj.start = function(){
 		if(solus.renderer.initialized && solus.ui && solus.main && solus.input) // TODO: add more
 		{
-			console.dir(solus.renderer);
+			//console.dir(solus.renderer);
 			console.log("starting game");
-			enemy = new Enemy();
+			encounter = new Encounter();
+			encounter.enemies.push(new Enemy());
+			player.resetLasers();
 			this.update();
 		}
 		else{
@@ -191,8 +193,6 @@ solus.main =(function(){
 				}
 			},
 			fireLasers: function(){
-				if(this.lasers.length == 0)
-					this.resetLasers();
 				this.lasers.forEach(function(laser){
 					laser.update(this.position, this.angle, solus.input.isKeyDown(KEYS.ENTER));
 				}.bind(this));
@@ -248,8 +248,8 @@ solus.main =(function(){
 
 	obj.update = function(){
 		player.update();
-		if(enemy)
-			enemy.update();
+		if(encounter)
+			encounter.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(obj.update);
 	};

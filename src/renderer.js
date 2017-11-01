@@ -203,13 +203,17 @@ solus.renderer = (function(){
     obj.createBasicEnemy = function(){
         var sprite = new PIXI.Sprite(basicEnemyTexture);
         sprite.zIndex = 2;
+        sprite.anchor.x = .5;
+        sprite.anchor.y = .5;
+        sprite.height = 96;
+        sprite.width = 64;
         displayStage.addChild(sprite);
         displayStage.updateLayersOrder();
         return sprite;
     };
 
     obj.updateObject = function(object, position, angle){
-        object.postion.set(position.x, position.y);
+        object.position.set(position.x, position.y);
         object.rotation = angle;
     }
 
