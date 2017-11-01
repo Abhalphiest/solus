@@ -66,14 +66,17 @@ solus.renderer = (function(){
             displayStage.updateLayersOrder();
         }
 
+        
+
         displayStage.updateLayersOrder = function () {
              this.children.sort(function(a,b) {
                 a.zIndex = a.zIndex || 0;
                 b.zIndex = b.zIndex || 0;
                 return a.zIndex - b.zIndex;
             });
-             console.log(this.children);
+             // console.log(this.children);
         };
+
         console.log("renderer initialized");
     }
     addOnLoadEvent(init);
@@ -110,9 +113,9 @@ solus.renderer = (function(){
 
     obj.updateLaser = function(laser, origin, endpoint){
         laser.clear();
-        laser.lineStyle = (4, 0xFFFFFF, 1);
-        laser.moveTo(origin);
-        laser.lineTo(endpoint);
+        laser.lineStyle(2, 0xFF0000, 1);
+        laser.moveTo(origin.x,origin.y);
+        laser.lineTo(endpoint.x,endpoint.y);
     }
 
     obj.render = function(){

@@ -27,12 +27,9 @@ function Projectile(){
 
 function Laser(angle, sweepIncrement){
 	this.length = 0;
-	if(angle){
-		this.angle = angle;
-	}
-	else
-		this.angle = 0; // angle from horizontal from the ship in radians
-	this.acceleration = .2;
+	this.angle = angle; // angle from horizontal from the ship in radians
+	this.acceleration = 400;
+	this.velocity = 0;
 	this.endPoint = new Vector(); // position is the "origin" of the laser, end point is the "tip" of it, so to speak
 	if(sweepIncrement){
 		this.sweepIncrement = sweepIncrement;
@@ -40,23 +37,23 @@ function Laser(angle, sweepIncrement){
 	else
 		this.sweepIncrement = 0;
 	this.sprite = solus.renderer.createLaser();
-	this.update = function(position, sweep){
-		if(position) // follow the ship
-			this.position = position;
-		this.velocity = vectorAdd(this.velocity, this.acceleration); // acceleration when first fired
-		this.acceleration = this.acceleration.scale(.05);
-		this.length = this.velocity.getLength();
-		if(this.acceleration.getLength() < .001 && this.acceleration.getLength() != 0)
-			this.acceleration.setLength(0);
+	this.update = function(position, angle, sweep){
+		this.position = position;
+		this.velocity += this.acceleration; // acceleration when first fired
+		this.acceleration *= .05;
+		this.length = this.velocity;
 
 		// calculate new end point
 		if(sweep){
 			this.angle += this.sweepIncrement; // if sweepIncrement wasn't passed in in the constructor, this does nothing
 		}
 
-		this.endPoint = vectorAdd(this.position, getUnitVectorFromAngle(this.angle).setLength(this.length));
+		// console.log(sweep);
+		// console.log(this.position);
+		 console.log(this.endPoint);
+		this.endPoint = vectorAdd(this.position, getUnitVectorFromAngle(this.angle+angle).setLength(this.length));
 
-		this.updateLaser(this.sprite,this.position, this.endPoint);
+		solus.renderer.updateLaser(this.sprite,this.position, this.endPoint);
 
 	}
 }
@@ -71,7 +68,7 @@ function Bullet(position, direction){
 			return;
 		this.velocity = vectorAdd(this.acceleration, this.velocity);
 		this.acceleration = this.acceleration.scale(.05);
-		if(this.acceleration.getLength() < .001 this.acceleration.getLength() != 0)
+		if(this.acceleration.getLength() < .001 && this.acceleration.getLength() != 0)
 			this.acceleration.setLength(0);
 		this.position = vectorAdd(this.velocity, this.position);
 		solus.renderer.updateBullet(this.sprite, this.position);

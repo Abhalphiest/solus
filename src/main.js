@@ -175,14 +175,31 @@ solus.main =(function(){
 				}
 			},
 			fireLasers: function(){
-				console.log('fire ze lasers! Laser power: ' + this.laserPower);
+				if(this.lasers.length == 0)
+					this.resetLasers();
+				this.lasers.forEach(function(laser){
+					laser.update(this.position, this.angle, solus.input.isKeyDown(KEYS.ENTER));
+				}.bind(this));
 				this.laserPower--;
+				if(this.laserPower == 0)
+					this.resetLasers();
 			},
 			rechargeLasers: function(){
 				if(this.laserPower < 100)
 					this.laserPower++;
 			},
 			resetLasers: function(){
+				this.lasers.forEach(function(laser){
+					laser.destroy();
+				});
+				this.lasers.length = [];
+
+				// left side
+				this.lasers[0] = new Laser(Math.PI/2,-Math.PI/200); // forward
+				this.lasers[1] = new Laser(Math.PI/2,Math.PI/200); // backward
+				// right side
+				this.lasers[2] = new Laser(-Math.PI/2,Math.PI/200); // forward
+				this.lasers[3] = new Laser(-Math.PI/2,-Math.PI/200); // backward
 
 			},
 			takeDamage: function(damage){
@@ -193,8 +210,7 @@ solus.main =(function(){
 			}
 
 		};
-		// initialize lasers
-		obj.resetLasers();
+		
 
 		// set up input callbacks and other things that have to wait for everything to be loaded
 		addOnLoadEvent(function(){

@@ -9,6 +9,8 @@ var solus = solus || {};
 // ---------------------------------
 
 var KEYS = Object.freeze({
+	TAB: 9,
+	ENTER: 13,
 	SHIFT: 16,
 	ALT: 18,
 	ESCAPE: 27,
