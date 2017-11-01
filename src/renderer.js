@@ -131,9 +131,9 @@ solus.renderer = (function(){
                 addAtBack: true,
                 spawnType: "circle",
                 spawnCircle: {
-                    x: 0,
+                    x: -25,
                     y: 0,
-                    r: 2
+                    r: 1
                 }
             }
         );
@@ -166,6 +166,10 @@ solus.renderer = (function(){
         var now = Date.now();
         if(playerEmitter){
             playerEmitter.updateSpawnPos(playerSprite.position.x, playerSprite.position.y);
+            playerEmitter.rotation = rotation;
+            var offsetVector = getUnitVectorFromAngle(rotation+Math.PI).setLength(25);
+            playerEmitter.spawnCircle.x = offsetVector.x;
+            playerEmitter.spawnCircle.y = offsetVector.y;
             playerEmitter.update((now - elapsed) * 0.001);
         }
         elapsed = now;
