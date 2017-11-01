@@ -16,6 +16,7 @@ solus.renderer = (function(){
     var pixiLoader; 
     var playerSprite;
     var playerEmitter;
+    var playerEmitterContainer;
     var playerContainer;
     var displayStage;
     var background;
@@ -40,7 +41,9 @@ solus.renderer = (function(){
         // the root container for the entire display
         displayStage = new PIXI.Container();
         playerContainer = new PIXI.Container();
-        playerContainer.zIndex = 1;
+        playerContainer.zIndex = 2;
+        playerEmitterContainer = new PIXI.Container();
+        playerEmitterContainer.zIndex = 1;
         background = new PIXI.Container();
         
 
@@ -76,7 +79,7 @@ solus.renderer = (function(){
             // The PIXI.Container to put the emitter in
             // if using blend modes, it's important to put this
             // on top of a bitmap, and not use the root stage Container
-            playerContainer,
+            playerEmitterContainer,
           
             // The collection of particle images to use
             [PIXI.Texture.fromImage('assets/sprites/particletrail.png')],
@@ -85,8 +88,8 @@ solus.renderer = (function(){
             // of the emitter
             {
                 alpha: {
-                    start: 0,
-                    end: .5
+                    start: .9,
+                    end: 0
                 },
                 scale: {
                     start: 0.49,
@@ -128,16 +131,17 @@ solus.renderer = (function(){
                     x: 0,
                     y: 0
                 },
-                addAtBack: true,
+                addAtBack: false,
                 spawnType: "circle",
                 spawnCircle: {
-                    x: -25,
+                    x: -35,
                     y: 0,
                     r: 1
                 }
             }
         );
 
+        playerEmitter.emit = false;
 
 
 
@@ -152,25 +156,41 @@ solus.renderer = (function(){
              // console.log(this.children);
         };
 
+        displayStage.addChild(playerEmitterContainer);
+        displayStage.updateLayersOrder();
         console.log("renderer initialized");
     }
     addOnLoadEvent(init);
 
     // TODO: make dt function, will want it elsewhere anyways
     var elapsed = Date.now();
-    obj.updatePlayerSprite = function(x,y,rotation){
+    obj.updatePlayerSprite = function(x,y,rotation, emit){
         if(playerSprite){
             playerSprite.position.set(x,y);
             playerSprite.rotation = rotation;
         }
         var now = Date.now();
         if(playerEmitter){
+            if(!emit && playerEmitter.emit){
+                playerEmitterContainer.alpha *= .9;
+                if(playerEmitterContainer.alpha <= 0){
+                    playerEmitterContainer.alpha = 0;
+                    playerEmitter.cleanup();
+                    playerEmitter.emit = false;
+                }
+            }
+            else if(emit){
+                playerEmitter.emit = true;
+                playerEmitter.resetPositionTracking()
+                playerEmitterContainer.alpha = 1;
+            }
             playerEmitter.updateSpawnPos(playerSprite.position.x, playerSprite.position.y);
             playerEmitter.rotation = rotation;
-            var offsetVector = getUnitVectorFromAngle(rotation+Math.PI).setLength(25);
+            var offsetVector = getUnitVectorFromAngle(rotation+Math.PI).setLength(35);
             playerEmitter.spawnCircle.x = offsetVector.x;
             playerEmitter.spawnCircle.y = offsetVector.y;
             playerEmitter.update((now - elapsed) * 0.001);
+            
         }
         elapsed = now;
     };

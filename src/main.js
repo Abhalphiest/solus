@@ -115,10 +115,13 @@ solus.main =(function(){
 				//
 				// --------------------------------
 
+				var emit = false;
+
 				// forward/backward acceleration
 				if(solus.input.isKeyDown(KEYS.W) || solus.input.isKeyDown(KEYS.UP_ARROW))
 				{
 					this.acceleration = vectorAdd(this.acceleration, getUnitVectorFromAngle(this.angle))
+					emit = true;
 				}
 				else if(solus.input.isKeyDown(KEYS.S)|| solus.input.isKeyDown(KEYS.DOWN_ARROW)){
 					this.acceleration = getUnitVectorFromAngle(this.angle).negation();
@@ -143,8 +146,9 @@ solus.main =(function(){
 				this.velocity = vectorAdd(this.velocity, this.acceleration);
 				
 				// if we're going forward
-				if(this.velocity.getLength() != 0 && dotProduct(this.velocity, getUnitVectorFromAngle(this.angle)) >= 0)
+				if(this.velocity.getLength() != 0 && dotProduct(this.velocity, getUnitVectorFromAngle(this.angle)) >= 0){
 					this.angle = this.velocity.getAngle();
+				}
 
 				// if we're going backward
 				else if(this.velocity.getLength() > 0 && dotProduct(this.velocity, getUnitVectorFromAngle(this.angle)) < 0){
@@ -159,7 +163,7 @@ solus.main =(function(){
 
 				// move the ship, presumably
 				this.position = vectorAdd(this.position, this.velocity);
-				solus.renderer.updatePlayerSprite(player.position.x,player.position.y, player.angle);
+				solus.renderer.updatePlayerSprite(player.position.x,player.position.y, player.angle, emit);
 
 				var removeIndices = []; // not even kind of worth it to try to remove things from the array as we iterate over it
 
