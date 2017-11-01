@@ -16,13 +16,16 @@ solus.main =(function(){
 
 	var encounter;
 
+
+	// for start code that requires certain modules to be loaded
 	obj.start = function(){
 		if(solus.renderer.initialized && solus.ui && solus.main && solus.input) // TODO: add more
 		{
-			//console.dir(solus.renderer);
 			console.log("starting game");
 			encounter = new Encounter();
-			encounter.enemies.push(new Enemy());
+			encounter.enemies.push(new Enemy(new Vector(700,300), Math.PI/2));
+			encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
+			encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
 			player.resetLasers();
 			this.update();
 		}

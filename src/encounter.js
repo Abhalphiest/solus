@@ -45,12 +45,18 @@ function GameObject(){
 	this.destroy = function(){
 
 	};
+	this.onCollision = function(object){
+
+	};
 }
 
 // base enemy constructor
-function Enemy(){
+function Enemy(position, angle){
 	this.sprite = solus.renderer.createBasicEnemy();
-	this.position = new Vector(700, 300);
+	if(position)
+		this.position = position;
+	if(angle)
+		this.angle = angle;
 	this.update = function(){
 		solus.renderer.updateObject(this.sprite, this.position, this.angle);
 	}
