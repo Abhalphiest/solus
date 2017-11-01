@@ -21,6 +21,7 @@ solus.renderer = (function(){
     var displayStage;
     var background;
     var basicEnemyTexture;
+    var bulletTexture;
 
     function init(){
 
@@ -52,10 +53,12 @@ solus.renderer = (function(){
             .add("assets/sprites/playerShip.png")
             .add("assets/sprites/basicEnemy.png")
             .add("assets/environments/galaxy2.jpg")
+            .add("assets/sprites/bullet.png")
             .load(spriteSetup);
 
         function spriteSetup(){
             basicEnemyTexture = pixiResources["assets/sprites/basicEnemy.png"].texture;
+            bulletTexture = pixiResources["assets/sprites/bullet.png"].texture;
             playerSprite = new PIXI.Sprite(pixiResources["assets/sprites/playerShip.png"].texture);
             playerSprite.anchor.x = 0.5;
             playerSprite.anchor.y = 0.5;
@@ -120,11 +123,11 @@ solus.renderer = (function(){
                     max: 0
                 },
                 lifetime: {
-                    min: 1,
+                    min: .5,
                     max: 1.5
                 },
                 blendMode: "normal",
-                frequency: 0.001,
+                frequency: 0.01,
                 emitterLifetime: -1,
                 maxParticles: 1000,
                 pos: {
@@ -166,8 +169,8 @@ solus.renderer = (function(){
     var elapsed = Date.now();
     obj.updatePlayerSprite = function(x,y,rotation, emit){
         if(playerSprite){
-            playerSprite.position.set(x,y);
-            playerSprite.rotation = rotation;
+            playerContainer.position.set(x,y);
+            playerContainer.rotation = rotation;
         }
         var now = Date.now();
         if(playerEmitter){
@@ -184,7 +187,7 @@ solus.renderer = (function(){
                 playerEmitter.resetPositionTracking()
                 playerEmitterContainer.alpha = 1;
             }
-            playerEmitter.updateSpawnPos(playerSprite.position.x, playerSprite.position.y);
+            playerEmitter.updateSpawnPos(x,y);
             playerEmitter.rotation = rotation;
             var offsetVector = getUnitVectorFromAngle(rotation+Math.PI).setLength(35);
             playerEmitter.spawnCircle.x = offsetVector.x;
@@ -196,13 +199,14 @@ solus.renderer = (function(){
     };
 
     obj.createBullet = function(){
-        var circle = new PIXI.Graphics();
-        circle.beginFill(0xFFFFFF);
-        circle.drawCircle(0,0,2);
-        circle.zIndex = 1;
-        displayStage.addChild(circle);
+        var bullet = new PIXI.Sprite(bulletTexture);
+        bullet.zIndex = 1;
+        bullet.width = 10;
+        bullet.height = 10;
+        bullet.rotation = Math.random()*Math.PI*2;
+        displayStage.addChild(bullet);
         displayStage.updateLayersOrder();
-        return circle;
+        return bullet;
     };
 
     obj.updateBullet = function(bullet, position){

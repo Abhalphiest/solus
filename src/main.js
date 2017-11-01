@@ -142,6 +142,14 @@ solus.main =(function(){
 					this.acceleration = vectorAdd(this.acceleration, getUnitVectorFromAngle(this.angle+Math.PI/2).scale(turnScale));
 				}
 
+
+
+				// clamp speed
+				this.velocity.clampLength(0,this.maxSpeed);
+				// eventually stop drifting (once it is no longer noticeable movement) so we can check against 0
+				if(this.velocity.getLength() < 0.1)
+					this.velocity.setLength(0);
+
 				// accelerate
 				this.velocity = vectorAdd(this.velocity, this.acceleration);
 				
@@ -154,12 +162,6 @@ solus.main =(function(){
 				else if(this.velocity.getLength() > 0 && dotProduct(this.velocity, getUnitVectorFromAngle(this.angle)) < 0){
 					this.angle = this.velocity.getAngle() + Math.PI;
 				}
-
-				// clamp speed
-				this.velocity.clampLength(0,this.maxSpeed);
-				// eventually stop drifting (once it is no longer noticeable movement) so we can check against 0
-				if(this.velocity.getLength() < 0.1)
-					this.velocity.setLength(0);
 
 				// move the ship, presumably
 				this.position = vectorAdd(this.position, this.velocity);
