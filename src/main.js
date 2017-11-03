@@ -10,12 +10,20 @@ var solus = solus || {};
 solus.main =(function(){
 
 	var obj = {};
-	var i = 0;
-	var paused = false;
+	var i = 0; // what is this used for?
 	var animationRequestId;
 
 	var encounter;
 
+	var GameState = Object.freeze({
+		GAMEPLAY: 0,
+		MENU: 1,
+		PAUSED: 2,
+		GAMEOVER: 3
+	});
+
+
+	obj.gameState = GameState.MENU; // we start on the start menu
 
 	// for start code that requires certain modules to be loaded
 	obj.start = function(){
@@ -27,6 +35,7 @@ solus.main =(function(){
 			encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
 			encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
 			player.resetLasers();
+			this.gameState = GameState.GAMEPLAY;
 			this.update();
 		}
 		else{
@@ -34,9 +43,11 @@ solus.main =(function(){
 		}
 	}
 
-	obj.isPaused = function(){return paused;};
+	obj.isPaused = function(){return this.gameState === GameState.PAUSED;};
 	obj.pause = function(){
-		paused = true; 
+		if(this.gameState !== GameState.GAMEPLAY) // only pause gameplay, no need to pause a UI screen
+			return;
+		this.gameState = GameState.PAUSED; 
 		solus.ui.pauseScreen.show();
 		if(animationRequestId){
 			window.cancelAnimationFrame(animationRequestId); 
@@ -44,18 +55,22 @@ solus.main =(function(){
 		}
 	};
 	obj.resume = function(){
-		if(!solus.ui.gameMenu.visible){
-			paused = false; 
+		if(this.gameState !== GameState.MENU){
+			this.gameState = GameState.GAMEPLAY; 
 			solus.ui.pauseScreen.hide();
 			if(!animationRequestId){
 				animationRequestId = window.requestAnimationFrame(this.update.bind(this));
 			}
 		}
 	};
+	obj.closeMenu = function(){
+		this.gameState = GameState.PAUSED;
+		this.resume();
+	}
 	window.onblur = obj.pause.bind(obj);
 	window.onfocus = obj.resume.bind(obj);
 
-	var CANNON_TYPE = Object.freeze({
+	var CannonType = Object.freeze({
 		FRONT: 0,
 		MID: 1,
 		BACK: 2,
@@ -75,21 +90,6 @@ solus.main =(function(){
 			bullets: [],
 			lasers:[],
 			update: function(){
-				// -------------------------------
-				//
-				// LASER-US 
-				//
-				// --------------------------------
-
-				if(solus.input.isKeyDown(KEYS.ALT)){
-					// release the kracken!
-					if(this.laserPower > 0){
-						this.fireLasers();
-					}
-				}
-				else{
-					this.rechargeLasers();
-				}
 
 				// --------------------------------
 				//
@@ -169,39 +169,65 @@ solus.main =(function(){
 
 				var removeIndices = []; // not even kind of worth it to try to remove things from the array as we iterate over it
 
-				this.bullets.forEach(function(bullet){
-					bullet.update();
-					if(!bullet.active){
-						removeIndices.push(this.bullets.indexOf(bullet));
-					}
-				}.bind(this));
+				///if(this.velocity.getLength() !== 0){ // timestop
 
-				removeIndices.forEach(function(index){
-					this.bullets.splice(index, 1);
-				}.bind(this));	
+					this.bullets.forEach(function(bullet){
+						bullet.update();
+						if(!bullet.active){
+							removeIndices.push(this.bullets.indexOf(bullet));
+						}
+					}.bind(this));
+
+					removeIndices.forEach(function(index){
+						this.bullets.splice(index, 1);
+					}.bind(this));	
+
+					// -------------------------------
+					//
+					// LASER-US 
+					//
+					// --------------------------------
+					
+					if(solus.input.isKeyDown(KEYS.ALT)){
+						// release the kracken!
+						if(this.laserPower > 0){
+							this.fireLasers();
+						}
+					}
+					else{
+						this.rechargeLasers();
+					}
+
+				//}
 
 			},
 			switchCannons: function(){
+				if(solus.main.gameState !== GameState.GAMEPLAY)
+					return;
 				this.activeCannon++;
 				this.activeCannon = this.activeCannon % 3; // avoid a branch, keep it in bounds
 			},
 			fireCannons: function(){
+				if(solus.main.gameState !== GameState.GAMEPLAY)
+					return;
 				switch(this.activeCannon){
-					case CANNON_TYPE.FRONT:
+					case CannonType.FRONT:
 						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle).scale(16)), getUnitVectorFromAngle(this.angle)));
 					break;
 
-					case CANNON_TYPE.MID:
+					case CannonType.MID:
 						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  + Math.PI/2).scale(16)), getUnitVectorFromAngle(this.angle + Math.PI/2)));
 						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  - Math.PI/2).scale(16)), getUnitVectorFromAngle(this.angle - Math.PI/2)));
 					break;
 
-					case CANNON_TYPE.BACK:
+					case CannonType.BACK:
 						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle+Math.PI).scale(16)), getUnitVectorFromAngle(this.angle + Math.PI)));
 					break;
 				}
 			},
 			fireLasers: function(){
+				if(solus.main.gameState !== GameState.GAMEPLAY)
+					return;
 				this.lasers.forEach(function(laser){
 					laser.update(this.position, this.angle, solus.input.isKeyDown(KEYS.ENTER));
 				}.bind(this));
@@ -210,10 +236,14 @@ solus.main =(function(){
 					this.resetLasers();
 			},
 			rechargeLasers: function(){
+				if(solus.main.gameState !== GameState.GAMEPLAY)
+					return;
 				if(this.laserPower < MAX_LASER_POWER)
 					this.laserPower++;
 			},
 			resetLasers: function(){
+				if(solus.main.gameState !== GameState.GAMEPLAY)
+					return;
 				this.lasers.forEach(function(laser){
 					laser.destroy();
 				});
@@ -257,7 +287,7 @@ solus.main =(function(){
 
 	obj.update = function(){
 		player.update();
-		if(encounter)
+		if(encounter)// && player.velocity.getLength() !== 0)
 			encounter.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(obj.update);
@@ -265,13 +295,20 @@ solus.main =(function(){
 
 	addOnLoadEvent(function(){
 		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 
-			if(this.isPaused()){
-				solus.ui.gameMenu.hide();
-				this.resume(); 
+			if(this.gameState === GameState.MENU){
+				if(solus.ui.currentMenu === solus.ui.gameMenu){
+					solus.ui.gameMenu.hide();
+					this.gameState = GameState.PAUSED;
+					this.resume(); 
+				}
+				else if(solus.ui.currentMenu !== solus.ui.mainMenu){
+					solus.ui.currentMenu.hide(); // will restore menu under it
+				}
 			}
 			else{ 
-				solus.ui.gameMenu.show();
 				this.pause();
+				this.gameState = GameState.MENU;
+				solus.ui.gameMenu.show();
 			}
 		}.bind(obj));	
 	}.bind(obj));

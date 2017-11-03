@@ -52,6 +52,9 @@ function GameObject(){
 
 // base enemy constructor
 function Enemy(position, angle){
+
+	var maxSpeed = 10;
+
 	this.sprite = solus.renderer.createBasicEnemy();
 	if(position)
 		this.position = position;
@@ -71,4 +74,29 @@ Enemy.prototype = new GameObject();
 Enemy.prototype.constructor = Enemy;
 
 
+// general AI functions
 
+// moves smoothly in a random direction
+function wander(){
+
+}
+
+// maneuvers towards an object
+function seek(point){
+
+}
+
+// maneuvers to avoid an oncoming object
+function avoid(object){
+
+}
+
+// maneuvers to turn and face given object
+function target(object){
+
+}
+
+// checks to see if there are detectable nearby objects
+function detect(objects){
+
+}
