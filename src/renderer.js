@@ -20,8 +20,8 @@ solus.renderer = (function(){
     var playerContainer;
     var displayStage;
     var background;
-    var basicEnemyTexture;
-    var bulletTexture;
+    var basicEnemy = {};
+    var bullet = {};
 
     function init(){
 
@@ -46,36 +46,9 @@ solus.renderer = (function(){
         playerEmitterContainer = new PIXI.Container();
         playerEmitterContainer.zIndex = 1;
         background = new PIXI.Container();
+
+        loadJSON("assets/sprites.json", setUpSprites);
         
-
-        // load the sprites
-        PIXI.loader
-            .add("assets/sprites/playerShip.png")
-            .add("assets/sprites/basicEnemy.png")
-            .add("assets/environments/galaxy2.jpg")
-            .add("assets/sprites/bullet.png")
-            .load(spriteSetup);
-
-        function spriteSetup(){
-            basicEnemyTexture = pixiResources["assets/sprites/basicEnemy.png"].texture;
-            bulletTexture = pixiResources["assets/sprites/bullet.png"].texture;
-            playerSprite = new PIXI.Sprite(pixiResources["assets/sprites/playerShip.png"].texture);
-            playerSprite.anchor.x = 0.5;
-            playerSprite.anchor.y = 0.5;
-            playerSprite.zIndex = 2;
-            playerContainer.addChild(playerSprite);
-            displayStage.addChild(playerContainer);
-            displayStage.updateLayersOrder();
-
-            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy2.jpg"].texture);
-            background.addChild(backgroundSprite);
-            background.zIndex = -1;
-            displayStage.addChild(background);
-            displayStage.updateLayersOrder();
-
-            obj.initialized = true;
-        }
-
         // make particle trail for player
         playerEmitter = new PIXI.particles.Emitter(
 
@@ -146,10 +119,6 @@ solus.renderer = (function(){
 
         playerEmitter.emit = false;
 
-
-
-        
-
         displayStage.updateLayersOrder = function () {
              this.children.sort(function(a,b) {
                 a.zIndex = a.zIndex || 0;
@@ -164,6 +133,47 @@ solus.renderer = (function(){
         console.log("renderer initialized");
     }
     addOnLoadEvent(init);
+
+    var setUpSprites= function(assets){
+        console.dir(assets)
+
+        // load the sprites
+        PIXI.loader
+            .add(assets.spritePath + assets.player.sprite)
+            .add(assets.spritePath + assets.basicEnemy.sprite)
+            .add("assets/environments/galaxy2.jpg")
+            .add(assets.spritePath + assets.bullet.sprite)
+            .load(spriteSetup);
+
+        function spriteSetup(){
+            basicEnemy.texture = pixiResources[assets.spritePath + assets.basicEnemy.sprite].texture;
+            basicEnemy.width = assets.basicEnemy.width;
+            basicEnemy.height = assets.basicEnemy.height;
+
+            bullet.texture = pixiResources[assets.spritePath + assets.bullet.sprite].texture;
+            bullet.width = assets.bullet.width;
+            bullet.height = assets.bullet.height;
+
+            playerSprite = new PIXI.Sprite(pixiResources[assets.spritePath + assets.player.sprite].texture);
+            playerSprite.width = assets.player.width;
+            playerSprite.height = assets.player.height;
+            playerSprite.anchor.x = 0.5;
+            playerSprite.anchor.y = 0.5;
+            playerSprite.zIndex = 2;
+            playerContainer.addChild(playerSprite);
+            displayStage.addChild(playerContainer);
+            displayStage.updateLayersOrder();
+
+            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy2.jpg"].texture);
+            background.addChild(backgroundSprite);
+            background.zIndex = -1;
+            displayStage.addChild(background);
+            displayStage.updateLayersOrder();
+
+            obj.initialized = true;
+            console.log('sprites initialized');
+        }
+    };
 
     // TODO: make dt function, will want it elsewhere anyways
     var elapsed = Date.now();
@@ -199,14 +209,14 @@ solus.renderer = (function(){
     };
 
     obj.createBullet = function(){
-        var bullet = new PIXI.Sprite(bulletTexture);
-        bullet.zIndex = 1;
-        bullet.width = 10;
-        bullet.height = 10;
-        bullet.rotation = Math.random()*Math.PI*2;
-        displayStage.addChild(bullet);
+        var bulletSprite = new PIXI.Sprite(bullet.texture);
+        bulletSprite.zIndex = 1;
+        bulletSprite.width = bullet.width;
+        bulletSprite.height = bullet.height;
+        bulletSprite.rotation = Math.random()*Math.PI*2;
+        displayStage.addChild(bulletSprite);
         displayStage.updateLayersOrder();
-        return bullet;
+        return bulletSprite;
     };
 
     obj.updateBullet = function(bullet, position){
@@ -230,12 +240,12 @@ solus.renderer = (function(){
     }
 
     obj.createBasicEnemy = function(){
-        var sprite = new PIXI.Sprite(basicEnemyTexture);
+        var sprite = new PIXI.Sprite(basicEnemy.texture);
         sprite.zIndex = 2;
         sprite.anchor.x = .5;
         sprite.anchor.y = .5;
-        sprite.height = 96;
-        sprite.width = 64;
+        sprite.height = basicEnemy.height;
+        sprite.width = basicEnemy.width;
         displayStage.addChild(sprite);
         displayStage.updateLayersOrder();
         return sprite;

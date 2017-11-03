@@ -4,8 +4,7 @@ var solus = solus || {};
 
 // -----------------------------------------
 //
-// collision.js reads in pentagonal (usually) colliders and uses them with the SAT (separating axis theorem) algorithm
-// to detect collisions between objects, and raycasting to detect collisions between objects and projectiles
+// collision.js
 //
 // -----------------------------------------
 
@@ -41,10 +40,7 @@ solus.collisionSystem = (function (){
 		objects.forEach(function(object){
 			// check for projectile collision
 			projectiles.forEach(function(projectile){
-				if(raycast(projectile, object)){
-					object.takeDamage(projectile.damage);
-					projectile.destroy();
-				}
+				
 			});
 
 			var objectsCollidingWith = 0;
@@ -53,40 +49,33 @@ solus.collisionSystem = (function (){
 				if(object === obj2)
 					continue; // Collision against oneself is contraindicated by protocol.
 
-				if(sat(object, obj2)){
-					objectsCollidingWith++;
-					object.onCollision(obj2);
-					obj2.onCollision(object);
-				}
+				
 			});
 		});
 	};
 	
-	function raycast(projectile, object){
 
- 		// pseudocode
-
- 		//  count = 0
- 		// foreach side in polygon:
- 		//   if ray_intersects_segment(P,side) then
- 		//     count = count + 1
- 		// if is_odd(count) then
- 		//   return inside
- 		// else
- 		//   return outside
-
- 		return false;
 	
+
+	// checks to see if two rectangles are colliding (not necessarily axis aligned)
+	// x1,y1 is top corner of first rectangle, w1,h1 is width and height of 1st rectangle
+	// second rectangle analogous
+	function rectCollision(x1,y1,w1,h1,x2,y2,w2,h2){
+		return intersects(x1,w1,x2,w2) && intersects(y1,h1,y2,h2);
 	}
 
-
-	function sat(obj1, obj2){
-
-		// pseudocode
-
-		return false;
-
+	function circleRectCollision(x1,y1,w,h,x2,y2,rad){
+		
 	}
+
+	// checks to see if a given edge intersects another on one axis
+	// (ie only x axis or only y axis)
+	function intersects(p1, delta1, p2, delta2){
+		var maxStartValue = Math.max(p1,p2);
+		var minEndValue = Math.min(p1+delta1, p2+delta2);
+		return maxStartValue < minEndValue;
+	}
+	
 
 	return obj;
 }());

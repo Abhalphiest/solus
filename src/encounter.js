@@ -34,7 +34,7 @@ function GameObject(){
 	this.velocity = new Vector();
 	this.acceleration = new Vector();
 	this.angle = 0;
-	this.colliders = [];
+	this.collider = undefined;
 	this.sprite = undefined;
 	this.update = function(){
 

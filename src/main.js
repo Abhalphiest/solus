@@ -89,6 +89,7 @@ solus.main =(function(){
 			laserPower: MAX_LASER_POWER, // time in frames we can have lasers up for
 			bullets: [],
 			lasers:[],
+			collider:undefined,
 			update: function(){
 
 				// --------------------------------
