@@ -301,24 +301,13 @@ solus.main =(function(){
 
 	addOnLoadEvent(function(){
 		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 
-			if(this.gameState === GameState.MENU){
-				if(solus.ui.currentMenu === solus.ui.gameMenu){
-					solus.ui.gameMenu.hide();
-					this.gameState = GameState.PAUSED;
-					this.resume(); 
-				}
-				else if(solus.ui.currentMenu !== solus.ui.mainMenu){
-					solus.ui.currentMenu.hide(); // will restore menu under it
-				}
-			}
-			else{ 
+			if(this.gameState === GameState.GAMEPLAY){				
 				this.pause();
 				this.gameState = GameState.MENU;
 				solus.ui.gameMenu.show();
 			}
 		}.bind(obj));
-
-		//this.load();	
+	
 	}.bind(obj));
 	
 	

@@ -17,31 +17,6 @@ solus.ui = (function(){
 
 	obj.currentMenu = undefined;
 
-	obj.mainMenu = {
-		element: undefined,
-		show: function(){
-			this.element.style.display = "block";
-			this.element.style.opacity = 1;
-		},
-		hide: function(){
-			this.element.style.opacity = 0;
-			window.setTimeout(function(){this.element.style.display = "none";}.bind(this), 200);
-		}
-	};
-
-	obj.gameMenu = {
-		element: undefined,
-		show: function(){
-			this.element.style.display = "block";
-			this.element.style.opacity = 1;
-			obj.currentMenu = this;
-		},
-		hide: function(){
-			this.element.style.opacity = 0;
-			window.setTimeout(function(){this.element.style.display = "none";}.bind(this), 200);
-		},
-	};
-
 	obj.pauseScreen = {
 		element: undefined,
 		show: function(){
@@ -66,51 +41,49 @@ solus.ui = (function(){
 		element: undefined,
 	};
 
-	obj.options = {
-		element: undefined,
-		show: function(parent){
-			this.parent = parent;
+	
+
+
+	function Menu(id){
+		this.element = document.querySelector(id);
+		this.parent = undefined;
+		this.show= function(){
+			this.parent = obj.currentMenu;
+			if(this.parent)
+				this.parent.hide();
 			this.element.style.display = "block";
 			this.element.style.opacity = 1;
 			obj.currentMenu = this;
-		},
-		hide: function(){
+		};
+		this.hide= function(){
 			this.element.style.opacity = 0;
 			window.setTimeout(function(){this.element.style.display = "none";}.bind(this), 200);
-			if(this.parent)
+			
+		};
+		this.close = function(){
+			this.hide();
+			if(this.parent){  // kind of a linked list hierarchy
 				this.parent.show();
-
-		},
-		parent: undefined
-	};
-
-	obj.controlsScreen = {
-		element: undefined,
-		show: function(parent){
-			this.parent = parent;
-			this.element.style.display = "block";
-			this.element.style.opacity = 1;
-			obj.currentMenu = this;
-		},
-		hide: function(){
-			this.element.style.opacity = 0;
-			window.setTimeout(function(){this.element.style.display = "none";}.bind(this), 200);
-			if(this.parent)
-				this.parent.show();
-		},
-		parent: undefined
-	};
-
+				this.parent = undefined;
+			}
+			else{ // if we have no parent, then we're the top menu and we close
+				obj.currentMenu = undefined;
+				solus.main.closeMenu();
+			}
+		}
+	}
 
 
 	addOnLoadEvent(function(){
-		this.mainMenu.element = document.querySelector("#mainMenu");
-		this.gameMenu.element = document.querySelector("#gameMenu");
+		this.mainMenu = new Menu("#mainMenu");
+		this.gameMenu = new Menu("#gameMenu");
+		this.optionsMenu = new Menu("#optionsMenu");
 		this.pauseScreen.element = document.querySelector("#pauseScreen");
 		this.gameOverScreen.element = document.querySelector("#gameOverScreen");
 		this.hud.element = document.querySelector("#hud");
 		this.textOverlay.element = document.querySelector("#textOverlay");
-		this.controlsScreen.element = document.querySelector("#controlsScreen");
+		this.controlsScreen = new Menu("#controlsScreen");
+		this.credits = new Menu("#creditsScreen");
 
 		// set up onclick events for menus
 		document.querySelector("#newGame").onclick = function(){
@@ -118,17 +91,35 @@ solus.ui = (function(){
 			solus.main.start();
 		}.bind(this);
 		document.querySelector("#resumeGame").onclick = function(){
-			this.gameMenu.hide();
-			solus.main.closeMenu();
+			this.gameMenu.close();
 		}.bind(this);
 		document.querySelector("#gameOptions").onclick = function(){
-			//this.gameMenu.hide();
-			//this.options.show(this.gameMenu);
+			this.optionsMenu.show();
+		}.bind(this);
+		document.querySelector("#mainOptions").onclick = function(){
+			this.optionsMenu.show();
 		}.bind(this);
 		document.querySelector("#gameControls").onclick = function(){
-			this.gameMenu.hide();
-			this.controlsScreen.show(this.gameMenu);
+			this.controlsScreen.show();
 		}.bind(this);
+		document.querySelector("#mainControls").onclick = function(){
+			this.controlsScreen.show();
+		}.bind(this);
+
+		document.querySelector("#credits").onclick = function(){
+			this.credits.show();
+		}.bind(this);
+
+		document.querySelector("#quitGame").onclick = function(){
+			//solus.main.clear
+		};
+
+
+		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 
+			if(this.currentMenu && this.currentMenu != this.mainMenu){
+				this.currentMenu.close();
+			}
+		}.bind(this));
 	}.bind(obj));
 
 	return obj;

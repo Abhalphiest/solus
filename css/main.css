@@ -76,6 +76,7 @@ body{
 	font-size:2em;
 	text-align: center;
 	display:none;
+	background-color:black;
 }
 
 #mainMenu ul{
@@ -129,6 +130,6 @@ body{
 	margin:0;
 }
 
-#optionsScreen{
+#optionsMenu{
 	display:none;
 }
