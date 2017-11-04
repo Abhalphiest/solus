@@ -4,16 +4,40 @@
 	"player":{	
 		"sprite":"playerShip.png",
 		"height": 64,
-		"width":64
+		"width":64,
+		"colliders": [
+			{
+				"x":-32,
+				"y":-32,
+				"height":64,
+				"width":64
+			}
+		]
 	},
 	"basicEnemy":{
 		"sprite":"basicEnemy.png",
 		"height": 96,
-		"width":64		
+		"width":64,
+		"colliders": [
+			{
+				"x":-32,
+				"y":-48,
+				"height":96,
+				"width":64
+			}
+		]
 	},
 	"bullet":{
 		"sprite":"bullet.png",
 		"height": 10,
-		"width": 10
+		"width": 10,
+		"colliders":[
+			{
+				"x":-5,
+				"y":-5,
+				"height":10,
+				"width":10
+			}
+		]
 	}
 }

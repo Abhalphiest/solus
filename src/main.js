@@ -19,28 +19,33 @@ solus.main =(function(){
 		GAMEPLAY: 0,
 		MENU: 1,
 		PAUSED: 2,
-		GAMEOVER: 3
+		GAMEOVER: 3,
+		LOADING: 4
 	});
 
 
-	obj.gameState = GameState.MENU; // we start on the start menu
+	obj.gameState = GameState.LOADING; // we start loading first
 
-	// for start code that requires certain modules to be loaded
+	// all our resources are loaded when this is called
+
+	obj.launch = function(){
+
+		if(obj.gameState === GameState.LOADING){
+			obj.gameState = GameState.MENU;
+			solus.ui.mainMenu.show();
+		}
+
+		// prep stuff while we wait
+		encounter = new Encounter();
+		encounter.enemies.push(new Enemy(new Vector(700,300), Math.PI/2));
+		encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
+		encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
+		player.resetLasers();
+	}
+
 	obj.start = function(){
-		if(solus.renderer.initialized && solus.ui && solus.main && solus.input) // TODO: add more
-		{
-			console.log("starting game");
-			encounter = new Encounter();
-			encounter.enemies.push(new Enemy(new Vector(700,300), Math.PI/2));
-			encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
-			encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
-			player.resetLasers();
-			this.gameState = GameState.GAMEPLAY;
-			this.update();
-		}
-		else{
-			animationRequestId = window.requestAnimationFrame(this.start.bind(this));
-		}
+		this.gameState = GameState.GAMEPLAY;
+		this.update();
 	}
 
 	obj.isPaused = function(){return this.gameState === GameState.PAUSED;};
@@ -70,6 +75,9 @@ solus.main =(function(){
 	window.onblur = obj.pause.bind(obj);
 	window.onfocus = obj.resume.bind(obj);
 
+
+	// PLAYER LOGIC
+
 	var CannonType = Object.freeze({
 		FRONT: 0,
 		MID: 1,
@@ -89,7 +97,6 @@ solus.main =(function(){
 			laserPower: MAX_LASER_POWER, // time in frames we can have lasers up for
 			bullets: [],
 			lasers:[],
-			collider:undefined,
 			update: function(){
 
 				// --------------------------------
@@ -264,7 +271,6 @@ solus.main =(function(){
 			onCollision: function(object){
 
 			}
-
 		};
 		
 
@@ -279,9 +285,7 @@ solus.main =(function(){
 				solus.input.setKeyUpCallback(KEYS.ALT, obj.resetLasers.bind(obj));
 			}
 		);
-
 		return obj;
-
 	}();
 
 
@@ -290,6 +294,7 @@ solus.main =(function(){
 		player.update();
 		if(encounter)// && player.velocity.getLength() !== 0)
 			encounter.update();
+		//solus.collision.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(obj.update);
 	};
@@ -311,7 +316,9 @@ solus.main =(function(){
 				this.gameState = GameState.MENU;
 				solus.ui.gameMenu.show();
 			}
-		}.bind(obj));	
+		}.bind(obj));
+
+		//this.load();	
 	}.bind(obj));
 	
 	

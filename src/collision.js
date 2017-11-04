@@ -8,12 +8,11 @@ var solus = solus || {};
 //
 // -----------------------------------------
 
-solus.collisionSystem = (function (){
+solus.collision = (function (){
 	var obj = {};
 
 	var projectiles = [];
 	var objects = [];
-
 
 	// accessors for the arrays
 	obj.addProjectile = function(projectile){
@@ -40,39 +39,42 @@ solus.collisionSystem = (function (){
 		objects.forEach(function(object){
 			// check for projectile collision
 			projectiles.forEach(function(projectile){
-				
+				var collider1 = object.sprite.colliders[0];
+				var collider2 = projectile.sprite.colliders[0];
+				var x1 = collider1.x + object.position.x;
+				var y1 = collider1.y + object.position.y;
+				var x2 = collider2.x + projectile.position.x;
+				var y2 = collider2.y + projectile.position.y;
+				if(rectCollision(x1,y1,collider1.width,collider1.height, object.angle, x2,y2,collider2.width,collider2.height, projectile.angle)){
+					object.onCollision();
+					projectile.destroy();
+				}
 			});
 
-			var objectsCollidingWith = 0;
-			// check for object collision
-			objects.forEach(function(obj2){
-				if(object === obj2)
-					continue; // Collision against oneself is contraindicated by protocol.
-
-				
-			});
 		});
 	};
 	
 
+	function Rectangle(x,y,width,height,angle){
+		
+	};
 	
 
 	// checks to see if two rectangles are colliding (not necessarily axis aligned)
 	// x1,y1 is top corner of first rectangle, w1,h1 is width and height of 1st rectangle
 	// second rectangle analogous
-	function rectCollision(x1,y1,w1,h1,x2,y2,w2,h2){
+	function rectCollision(x1,y1,w1, a1, h1,x2,y2,w2,h2, a2){
+		
+
 		return intersects(x1,w1,x2,w2) && intersects(y1,h1,y2,h2);
 	}
 
-	function circleRectCollision(x1,y1,w,h,x2,y2,rad){
-		
-	}
 
 	// checks to see if a given edge intersects another on one axis
 	// (ie only x axis or only y axis)
-	function intersects(p1, delta1, p2, delta2){
-		var maxStartValue = Math.max(p1,p2);
-		var minEndValue = Math.min(p1+delta1, p2+delta2);
+	function intersects(p1, p2, q1, q2){
+		var maxStartValue = Math.max(p1,q1);
+		var minEndValue = Math.min(p2, q2);
 		return maxStartValue < minEndValue;
 	}
 	

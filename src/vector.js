@@ -47,8 +47,18 @@ function Vector(x,y){
 		return new Vector(this.x*scalar, this.y*scalar);
 	};
 
+
+	this.rotate = function(angle){
+		return new Vector(this.x*Math.cos(angle)-this.y*Math.sin(angle), this.x*Math.sin(angle) + this.y*Math.cos(angle));
+	}
 	this.negation = function(){
 		return new Vector(-this.x, -this.y);
+	}
+
+	this.project = function(vector){
+		var mag = dotProduct(this,vector)/vector.getLength();
+		return vector.normalized().scale(mag);
+
 	}
 }
 

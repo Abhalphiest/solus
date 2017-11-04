@@ -1,12 +1,15 @@
+var solus = solus || {};
+
 "use strict";
 
 function Projectile(){
 	this.destroy = function(){
 		// remove the sprite from the renderer
 		this.sprite.destroy();
+		
 
 		// remove us from collision detection
-		//solus.collisionSystem.removeProjectile(this);
+		solus.collision.removeProjectile(this);
 
 		this.active = false;
 		
@@ -22,7 +25,7 @@ function Projectile(){
 	this.sprite = undefined;
 	this.active = true;
 
-	//solus.collisionSystem.addProjectile(this);
+
 }
 
 function Laser(angle, sweepIncrement){
@@ -52,7 +55,8 @@ function Laser(angle, sweepIncrement){
 
 		solus.renderer.updateLaser(this.sprite,this.position, this.endPoint);
 
-	}
+	};
+	solus.collision.addProjectile(this);
 }
 
 function Bullet(position, direction){
@@ -75,6 +79,7 @@ function Bullet(position, direction){
 		if(this.velocity.getLength() < .01)
 		 	this.destroy();
 	};
+	solus.collision.addProjectile(this);
 }
 
 function EMP(){

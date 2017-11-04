@@ -34,7 +34,6 @@ function GameObject(){
 	this.velocity = new Vector();
 	this.acceleration = new Vector();
 	this.angle = 0;
-	this.collider = undefined;
 	this.sprite = undefined;
 	this.update = function(){
 
@@ -43,10 +42,9 @@ function GameObject(){
 
 	};
 	this.destroy = function(){
-
 	};
 	this.onCollision = function(object){
-
+		console.log('game object is colliding');
 	};
 }
 
@@ -65,7 +63,9 @@ function Enemy(position, angle){
 	}
 	this.destroy = function(){
 		this.sprite.destroy();
+		solus.collision.removeObject(this);
 	}
+	solus.collision.addObject(this);
 }
 
 

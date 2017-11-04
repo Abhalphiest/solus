@@ -11,17 +11,24 @@ var solus = solus || {};
 solus.renderer = (function(){
 
     var obj = {}; 
+
+    // shared rendering resources
     var pixiRenderer;
     var pixiResources;
     var pixiLoader; 
+    var displayStage;
+
+
     var playerSprite;
     var playerEmitter;
     var playerEmitterContainer;
     var playerContainer;
-    var displayStage;
+    
     var background;
     var basicEnemy = {};
     var bullet = {};
+
+    var debugRenderer;
 
     function init(){
 
@@ -47,7 +54,11 @@ solus.renderer = (function(){
         playerEmitterContainer.zIndex = 1;
         background = new PIXI.Container();
 
-        loadJSON("assets/sprites.json", setUpSprites);
+        debugRenderer = new PIXI.Graphics();
+        debugRenderer.zIndex = 2;
+        displayStage.addChild(debugRenderer);
+
+        solus.loader.loadJSON("assets/sprites.json", setUpSprites);
         
         // make particle trail for player
         playerEmitter = new PIXI.particles.Emitter(
@@ -130,50 +141,10 @@ solus.renderer = (function(){
 
         displayStage.addChild(playerEmitterContainer);
         displayStage.updateLayersOrder();
-        console.log("renderer initialized");
     }
     addOnLoadEvent(init);
 
-    var setUpSprites= function(assets){
-        console.dir(assets)
-
-        // load the sprites
-        PIXI.loader
-            .add(assets.spritePath + assets.player.sprite)
-            .add(assets.spritePath + assets.basicEnemy.sprite)
-            .add("assets/environments/galaxy2.jpg")
-            .add(assets.spritePath + assets.bullet.sprite)
-            .load(spriteSetup);
-
-        function spriteSetup(){
-            basicEnemy.texture = pixiResources[assets.spritePath + assets.basicEnemy.sprite].texture;
-            basicEnemy.width = assets.basicEnemy.width;
-            basicEnemy.height = assets.basicEnemy.height;
-
-            bullet.texture = pixiResources[assets.spritePath + assets.bullet.sprite].texture;
-            bullet.width = assets.bullet.width;
-            bullet.height = assets.bullet.height;
-
-            playerSprite = new PIXI.Sprite(pixiResources[assets.spritePath + assets.player.sprite].texture);
-            playerSprite.width = assets.player.width;
-            playerSprite.height = assets.player.height;
-            playerSprite.anchor.x = 0.5;
-            playerSprite.anchor.y = 0.5;
-            playerSprite.zIndex = 2;
-            playerContainer.addChild(playerSprite);
-            displayStage.addChild(playerContainer);
-            displayStage.updateLayersOrder();
-
-            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy2.jpg"].texture);
-            background.addChild(backgroundSprite);
-            background.zIndex = -1;
-            displayStage.addChild(background);
-            displayStage.updateLayersOrder();
-
-            obj.initialized = true;
-            console.log('sprites initialized');
-        }
-    };
+    
 
     // TODO: make dt function, will want it elsewhere anyways
     var elapsed = Date.now();
@@ -214,6 +185,7 @@ solus.renderer = (function(){
         bulletSprite.width = bullet.width;
         bulletSprite.height = bullet.height;
         bulletSprite.rotation = Math.random()*Math.PI*2;
+        bulletSprite.colliders = bullet.colliders.slice();
         displayStage.addChild(bulletSprite);
         displayStage.updateLayersOrder();
         return bulletSprite;
@@ -226,6 +198,11 @@ solus.renderer = (function(){
     obj.createLaser = function(){
         var line = new PIXI.Graphics();
         line.zIndex = 1;
+        line.collider = {
+            center:{x:0,y:0},
+            width:1,
+            height:0
+        };
         displayStage.addChild(line);
         displayStage.updateLayersOrder();
         return line;
@@ -246,6 +223,7 @@ solus.renderer = (function(){
         sprite.anchor.y = .5;
         sprite.height = basicEnemy.height;
         sprite.width = basicEnemy.width;
+        sprite.colliders = basicEnemy.colliders.slice();
         displayStage.addChild(sprite);
         displayStage.updateLayersOrder();
         return sprite;
@@ -254,6 +232,10 @@ solus.renderer = (function(){
     obj.updateObject = function(object, position, angle){
         object.position.set(position.x, position.y);
         object.rotation = angle;
+
+        var collider = object.colliders[0];
+
+        // debugRenderer.rotate(angle).beginFill().drawRect(position.x +collider.x, position.y + collider.y, collider.width, collider.height ).endFill();
     }
 
 
@@ -261,6 +243,49 @@ solus.renderer = (function(){
     obj.render = function(){
         if(pixiRenderer){
             pixiRenderer.render(displayStage);
+        }
+    };
+
+    var setUpSprites= function(assets){
+        // load the sprites
+        PIXI.loader
+            .add(assets.spritePath + assets.player.sprite)
+            .add(assets.spritePath + assets.basicEnemy.sprite)
+            .add("assets/environments/galaxy2.jpg")
+            .add(assets.spritePath + assets.bullet.sprite)
+            .pre(solus.loader.loadAsset)
+            .on("progress", solus.loader.finalizeAsset)
+            .load(spriteSetup);
+
+        function spriteSetup(){
+            basicEnemy.texture = pixiResources[assets.spritePath + assets.basicEnemy.sprite].texture;
+            basicEnemy.width = assets.basicEnemy.width;
+            basicEnemy.height = assets.basicEnemy.height;
+            basicEnemy.colliders = assets.basicEnemy.colliders;
+
+            bullet.texture = pixiResources[assets.spritePath + assets.bullet.sprite].texture;
+            bullet.width = assets.bullet.width;
+            bullet.height = assets.bullet.height;
+            bullet.colliders = assets.bullet.colliders;
+
+            playerSprite = new PIXI.Sprite(pixiResources[assets.spritePath + assets.player.sprite].texture);
+            playerSprite.width = assets.player.width;
+            playerSprite.height = assets.player.height;
+            playerSprite.anchor.x = 0.5;
+            playerSprite.anchor.y = 0.5;
+            playerSprite.zIndex = 2;
+            playerSprite.colliders = assets.player.colliders;
+            playerContainer.addChild(playerSprite);
+            displayStage.addChild(playerContainer);
+            displayStage.updateLayersOrder();
+
+            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy2.jpg"].texture);
+            background.addChild(backgroundSprite);
+            background.zIndex = -1;
+            displayStage.addChild(background);
+            displayStage.updateLayersOrder();
+            console.log('assets loaded');
+
         }
     };
 

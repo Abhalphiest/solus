@@ -113,6 +113,10 @@ solus.ui = (function(){
 		this.controlsScreen.element = document.querySelector("#controlsScreen");
 
 		// set up onclick events for menus
+		document.querySelector("#newGame").onclick = function(){
+			this.mainMenu.hide();
+			solus.main.start();
+		}.bind(this);
 		document.querySelector("#resumeGame").onclick = function(){
 			this.gameMenu.hide();
 			solus.main.closeMenu();
