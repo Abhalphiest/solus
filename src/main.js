@@ -40,7 +40,6 @@ solus.main =(function(){
 		encounter.enemies.push(new Enemy(new Vector(700,300), Math.PI/2));
 		encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
 		encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
-		player.resetLasers();
 	}
 
 	obj.start = function(){
@@ -236,6 +235,16 @@ solus.main =(function(){
 			fireLasers: function(){
 				if(solus.main.gameState !== GameState.GAMEPLAY)
 					return;
+
+				if(this.lasers.length === 0){
+					// left side
+					this.lasers[0] = new Laser(Math.PI/2,-Math.PI/(2*MAX_LASER_POWER)); // forward
+					this.lasers[1] = new Laser(Math.PI/2,Math.PI/(2*MAX_LASER_POWER)); // backward
+					// right side
+					this.lasers[2] = new Laser(-Math.PI/2,Math.PI/(2*MAX_LASER_POWER)); // forward
+					this.lasers[3] = new Laser(-Math.PI/2,-Math.PI/(2*MAX_LASER_POWER)); // backward
+				}
+
 				this.lasers.forEach(function(laser){
 					laser.update(this.position, this.angle, solus.input.isKeyDown(KEYS.ENTER));
 				}.bind(this));
@@ -256,13 +265,6 @@ solus.main =(function(){
 					laser.destroy();
 				});
 				this.lasers.length = [];
-
-				// left side
-				this.lasers[0] = new Laser(Math.PI/2,-Math.PI/(2*MAX_LASER_POWER)); // forward
-				this.lasers[1] = new Laser(Math.PI/2,Math.PI/(2*MAX_LASER_POWER)); // backward
-				// right side
-				this.lasers[2] = new Laser(-Math.PI/2,Math.PI/(2*MAX_LASER_POWER)); // forward
-				this.lasers[3] = new Laser(-Math.PI/2,-Math.PI/(2*MAX_LASER_POWER)); // backward
 
 			},
 			takeDamage: function(damage){

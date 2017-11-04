@@ -22,7 +22,7 @@ solus.collision = (function (){
 	obj.removeProjectile = function(projectile){
 		var index = projectiles.indexOf(projectile);
 		projectiles.splice(index, 1); // splice edits in place
-	}
+	};
 
 	obj.addObject = function(object){
 		objects.push(object);
@@ -36,41 +36,69 @@ solus.collision = (function (){
 	// main collision logic
 	obj.update = function(){
 
-		objects.forEach(function(object){
-			// check for projectile collision
-			projectiles.forEach(function(projectile){
-				var collider1 = object.sprite.colliders[0];
-				var collider2 = projectile.sprite.colliders[0];
-				var x1 = collider1.x + object.position.x;
-				var y1 = collider1.y + object.position.y;
-				var x2 = collider2.x + projectile.position.x;
-				var y2 = collider2.y + projectile.position.y;
-				if(rectCollision(x1,y1,collider1.width,collider1.height, object.angle, x2,y2,collider2.width,collider2.height, projectile.angle)){
-					object.onCollision();
-					projectile.destroy();
+		for(var i = 0; i < objects.length; i++){
+
+			var object = objects[i];
+
+			// check against projectiles
+			for(var j = 0; j < projectiles.length; j++){
+				var projectile = projectiles[j];
+
+				switch(projectile.type){
+					case "bullet":
+						if(checkPointCollision(projectile.position, object.sprite.colliders)){
+							projectile.onCollision();
+							object.onCollision();
+						}
+					break;
+
+					case "laser":
+						if(checkLineCollision(projectile.position, projectile.endPoint,object.sprite.colliders)){
+							projectile.onCollision();
+							object.onCollision();
+						}
+					break;
+
+					case "EMP":
+						if(checkPointCollision(projectile.position, object.sprite.colliders)){
+							projectile.onCollision();
+							object.onCollision();
+						}
+					break;
 				}
-			});
+			}
 
-		});
+			//check against objects that haven't already been checked
+			for(var k = i+1; k < objects.length; i++){
+				var object2 = objects[k];
+				if(checkObjectCollision(object.sprite.colliders, object2.sprite.colliders)){
+					object.onCollision();
+					object2.onCollision();
+				}
+			}
+
+		}
 	};
 	
 
-	function Rectangle(x,y,width,height,angle){
-		
-	};
+	function checkPointCollision(point, colliders){
+		return false;
+	}
 	
 
-	// checks to see if two rectangles are colliding (not necessarily axis aligned)
-	// x1,y1 is top corner of first rectangle, w1,h1 is width and height of 1st rectangle
-	// second rectangle analogous
-	function rectCollision(x1,y1,w1, a1, h1,x2,y2,w2,h2, a2){
-		
+	function checkObjectCollision(colliders1, colliders2){
+		// checks bounding circles first, to cull out all obvious non-collisions
 
-		return intersects(x1,w1,x2,w2) && intersects(y1,h1,y2,h2);
+		return false;
+		// now the separating axis theorem test
+	}
+
+	function checkLineCollision(startPoint, endPoint, colliders){
+		return false;
 	}
 
 
-	// checks to see if a given edge intersects another on one axis
+	// checks to see if a given line segment intersects another on one axis
 	// (ie only x axis or only y axis)
 	function intersects(p1, p2, q1, q2){
 		var maxStartValue = Math.max(p1,q1);

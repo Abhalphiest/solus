@@ -6,7 +6,7 @@ function Projectile(){
 	this.destroy = function(){
 		// remove the sprite from the renderer
 		this.sprite.destroy();
-		
+		console.log(this.type + " destroyed");
 
 		// remove us from collision detection
 		solus.collision.removeProjectile(this);
@@ -16,7 +16,10 @@ function Projectile(){
 	};
 	this.update = function(){
 		// no-op by default
-	}
+	};
+	this.onCollision = function(){
+
+	};
 	this.boundingRect = {top: 0, left: 0, width: 0, height: 0};
 	this.acceleration = new Vector();
 	this.velocity = new Vector(); // will be a 0 vector
@@ -24,11 +27,14 @@ function Projectile(){
 	this.damage = 1;
 	this.sprite = undefined;
 	this.active = true;
+	solus.collision.addProjectile(this);
 
 
 }
 
 function Laser(angle, sweepIncrement){
+	Projectile.call(this);
+	this.type = "laser";
 	this.length = 0;
 	this.angle = angle; // angle from horizontal from the ship in radians
 	this.acceleration = 30;
@@ -56,10 +62,11 @@ function Laser(angle, sweepIncrement){
 		solus.renderer.updateLaser(this.sprite,this.position, this.endPoint);
 
 	};
-	solus.collision.addProjectile(this);
 }
 
 function Bullet(position, direction){
+	Projectile.call(this);
+	this.type = "bullet";
 	this.sprite = solus.renderer.createBullet();
 	solus.renderer.updateBullet(this.sprite, position);
 	this.position = position;
@@ -79,16 +86,14 @@ function Bullet(position, direction){
 		if(this.velocity.getLength() < .01)
 		 	this.destroy();
 	};
-	solus.collision.addProjectile(this);
 }
 
 function EMP(){
-
+	Projectile.call(this);
+	this.type = "EMP";
 }
 
-Laser.prototype = new Projectile();
+
 Laser.prototype.constructor = Laser;
-Bullet.prototype = new Projectile();
 Bullet.prototype.constructor = Bullet;
-EMP.prototype = new Projectile();
 EMP.prototype.constructor = EMP;
