@@ -5,12 +5,22 @@
 		"sprite":"playerShip.png",
 		"height": 64,
 		"width":64,
-		"colliders": [
+		"collider": [
 			{
 				"x":-32,
-				"y":-32,
-				"height":64,
-				"width":64
+				"y":-32
+			},
+			{
+				"x":32,
+				"y":-32
+			},
+			{
+				"x":32,
+				"y":32
+			},
+			{
+				"x":-32,
+				"y":32
 			}
 		]
 	},
@@ -18,12 +28,22 @@
 		"sprite":"basicEnemy.png",
 		"height": 96,
 		"width":64,
-		"colliders": [
+		"collider": [
 			{
 				"x":-32,
-				"y":-48,
-				"height":96,
-				"width":64
+				"y":-48
+			},
+			{
+				"x":32,
+				"y":-48
+			},
+			{
+				"x":32,
+				"y":48
+			},
+			{
+				"x":-32,
+				"y":48
 			}
 		]
 	},
@@ -31,12 +51,22 @@
 		"sprite":"bullet.png",
 		"height": 10,
 		"width": 10,
-		"colliders":[
+		"collider":[
 			{
 				"x":-5,
-				"y":-5,
-				"height":10,
-				"width":10
+				"y":-5
+			},
+			{
+				"x":5,
+				"y":-5
+			},
+			{
+				"x":5,
+				"y":5
+			},
+			{
+				"x":-5,
+				"y":5
 			}
 		]
 	}

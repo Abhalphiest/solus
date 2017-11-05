@@ -296,7 +296,7 @@ solus.main =(function(){
 		player.update();
 		if(encounter)// && player.velocity.getLength() !== 0)
 			encounter.update();
-		//solus.collision.update();
+		solus.collision.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(obj.update);
 	};

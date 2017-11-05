@@ -185,7 +185,7 @@ solus.renderer = (function(){
         bulletSprite.width = bullet.width;
         bulletSprite.height = bullet.height;
         bulletSprite.rotation = Math.random()*Math.PI*2;
-        bulletSprite.colliders = bullet.colliders.slice();
+        bulletSprite.collider = bullet.collider.slice();
         displayStage.addChild(bulletSprite);
         displayStage.updateLayersOrder();
         return bulletSprite;
@@ -223,7 +223,7 @@ solus.renderer = (function(){
         sprite.anchor.y = .5;
         sprite.height = basicEnemy.height;
         sprite.width = basicEnemy.width;
-        sprite.colliders = basicEnemy.colliders.slice();
+        sprite.collider = basicEnemy.collider.slice();
         displayStage.addChild(sprite);
         displayStage.updateLayersOrder();
         return sprite;
@@ -233,9 +233,23 @@ solus.renderer = (function(){
         object.position.set(position.x, position.y);
         object.rotation = angle;
 
-        var collider = object.colliders[0];
+        
+        // var rotCollider = rotatePolygon(object.collider, angle);
+        // debugRenderer.beginFill().moveTo(rotCollider[0].x + position.x, rotCollider[0].y+position.y);
+        // for(var i = 1; i < rotCollider.length; i++)
+        //     debugRenderer.lineTo(rotCollider[i].x + position.x, rotCollider[i].y+position.y);
+        // debugRenderer.lineTo(rotCollider[0].x + position.x, rotCollider[0].y+position.y).endFill();
+    }
 
-        // debugRenderer.rotate(angle).beginFill().drawRect(position.x +collider.x, position.y + collider.y, collider.width, collider.height ).endFill();
+    obj.renderPolygon = function(polygon){
+        debugRenderer.beginFill().moveTo(polygon[0].x, polygon[0].y);
+        for(var i = 1; i < polygon.length; i++)
+            debugRenderer.lineTo(polygon[i].x, polygon[i].y);
+        debugRenderer.lineTo(polygon[0].x, polygon[0].y).endFill();
+    }
+
+    obj.drawLine = function(p1, p2){
+        debugRenderer.lineStyle(2, 0xFF0000, 1).moveTo(p1.x, p1.y).lineTo(p2.x,p2.y);
     }
 
 
@@ -244,6 +258,7 @@ solus.renderer = (function(){
         if(pixiRenderer){
             pixiRenderer.render(displayStage);
         }
+        debugRenderer.clear();
     };
 
     var setUpSprites= function(assets){
@@ -261,12 +276,12 @@ solus.renderer = (function(){
             basicEnemy.texture = pixiResources[assets.spritePath + assets.basicEnemy.sprite].texture;
             basicEnemy.width = assets.basicEnemy.width;
             basicEnemy.height = assets.basicEnemy.height;
-            basicEnemy.colliders = assets.basicEnemy.colliders;
+            basicEnemy.collider = assets.basicEnemy.collider;
 
             bullet.texture = pixiResources[assets.spritePath + assets.bullet.sprite].texture;
             bullet.width = assets.bullet.width;
             bullet.height = assets.bullet.height;
-            bullet.colliders = assets.bullet.colliders;
+            bullet.collider = assets.bullet.collider;
 
             playerSprite = new PIXI.Sprite(pixiResources[assets.spritePath + assets.player.sprite].texture);
             playerSprite.width = assets.player.width;
@@ -274,7 +289,7 @@ solus.renderer = (function(){
             playerSprite.anchor.x = 0.5;
             playerSprite.anchor.y = 0.5;
             playerSprite.zIndex = 2;
-            playerSprite.colliders = assets.player.colliders;
+            playerSprite.collider = assets.player.collider;
             playerContainer.addChild(playerSprite);
             displayStage.addChild(playerContainer);
             displayStage.updateLayersOrder();
