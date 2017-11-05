@@ -67,6 +67,10 @@ solus.main =(function(){
 			}
 		}
 	};
+	obj.openMenu = function(){
+		this.pause();
+		this.gameState = GameState.MENU;
+	}
 	obj.closeMenu = function(){
 		this.gameState = GameState.PAUSED;
 		this.resume();
@@ -302,13 +306,7 @@ solus.main =(function(){
 	};
 
 	addOnLoadEvent(function(){
-		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 
-			if(this.gameState === GameState.GAMEPLAY){				
-				this.pause();
-				this.gameState = GameState.MENU;
-				solus.ui.gameMenu.show();
-			}
-		}.bind(obj));
+		
 	
 	}.bind(obj));
 	

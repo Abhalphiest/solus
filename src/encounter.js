@@ -23,13 +23,17 @@ function Encounter(jsonpath){
 	};
 	this.update = function(){
 		this.enemies.forEach(function(enemy){
-			enemy.update();
+			if(enemy.active)
+				enemy.update();
+			
 		})
+
 	};
 }
 
 // base object constructor, can be anything in the game world that isn't the player
 function GameObject(){
+	this.active = true;
 	this.position = new Vector();
 	this.velocity = new Vector();
 	this.acceleration = new Vector();
@@ -43,9 +47,7 @@ function GameObject(){
 	};
 	this.destroy = function(){
 	};
-	this.onCollision = function(object){
-		console.log('game object is colliding');
-	};
+	
 }
 
 // base enemy constructor
@@ -64,7 +66,12 @@ function Enemy(position, angle){
 	this.destroy = function(){
 		this.sprite.destroy();
 		solus.collision.removeObject(this);
+		this.active = false;
 	}
+	this.onCollision = function(object){
+		console.log('game object is colliding');
+		this.destroy();
+	};
 	solus.collision.addObject(this);
 }
 

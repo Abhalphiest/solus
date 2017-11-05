@@ -6,7 +6,6 @@ function Projectile(){
 	this.destroy = function(){
 		// remove the sprite from the renderer
 		this.sprite.destroy();
-		console.log(this.type + " destroyed");
 
 		// remove us from collision detection
 		solus.collision.removeProjectile(this);
@@ -86,6 +85,9 @@ function Bullet(position, direction){
 		if(this.velocity.getLength() < .01)
 		 	this.destroy();
 	};
+	this.onCollision = function(){
+		this.destroy();
+	}
 }
 
 function EMP(){

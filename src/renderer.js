@@ -34,6 +34,7 @@ solus.renderer = (function(){
 
         // create a renderer that fills the entire screen and 
         // resizes with the browser window
+        PIXI.utils._saidHello = true;
         pixiRenderer = PIXI.autoDetectRenderer(window.innerWidth,window.innerHeight, {antialias: false, transparent: true, resolution: 1});
         pixiLoader = PIXI.loader;
         pixiResources = PIXI.loader.resources;
@@ -75,13 +76,13 @@ solus.renderer = (function(){
             // of the emitter
             {
                 alpha: {
-                    start: .9,
+                    start: .7,
                     end: 0
                 },
                 scale: {
-                    start: 0.49,
-                    end: 0.08,
-                    minimumScaleMultiplier: 1
+                    start: 0.11,
+                    end: 0.05,
+                    minimumScaleMultiplier: .5
                 },
                 color: {
                     start: "#f06b28",
@@ -101,17 +102,17 @@ solus.renderer = (function(){
                     min: 0,
                     max: 360
                 },
-                noRotation: true,
+                noRotation: false,
                 rotationSpeed: {
                     min: 0,
                     max: 0
                 },
                 lifetime: {
-                    min: .5,
-                    max: 1.5
+                    min: .25,
+                    max: .35
                 },
                 blendMode: "normal",
-                frequency: 0.01,
+                frequency: 0.001,
                 emitterLifetime: -1,
                 maxParticles: 1000,
                 pos: {
@@ -123,7 +124,7 @@ solus.renderer = (function(){
                 spawnCircle: {
                     x: -35,
                     y: 0,
-                    r: 1
+                    r: 6
                 }
             }
         );
@@ -149,10 +150,13 @@ solus.renderer = (function(){
     // TODO: make dt function, will want it elsewhere anyways
     var elapsed = Date.now();
     obj.updatePlayerSprite = function(x,y,rotation, emit){
-        if(playerSprite){
-            playerContainer.position.set(x,y);
-            playerContainer.rotation = rotation;
-        }
+
+        playerContainer.position.set(x,y);
+        playerContainer.rotation = rotation;
+        displayStage.pivot.x = x;
+        displayStage.pivot.y = y;
+        displayStage.position.x = pixiRenderer.width/2;
+        displayStage.position.y = pixiRenderer.height/2;
         var now = Date.now();
         if(playerEmitter){
             if(!emit && playerEmitter.emit){
@@ -294,12 +298,13 @@ solus.renderer = (function(){
             displayStage.addChild(playerContainer);
             displayStage.updateLayersOrder();
 
-            var backgroundSprite = new PIXI.Sprite(pixiResources["assets/environments/galaxy2.jpg"].texture);
-            background.addChild(backgroundSprite);
-            background.zIndex = -1;
-            displayStage.addChild(background);
+            var backgroundSprite = new PIXI.extras.TilingSprite(pixiResources["assets/environments/galaxy2.jpg"].texture, 10000000 , 10000);
+            backgroundSprite.zIndex = -1;
+            backgroundSprite.pivot.x = .5;
+            backgroundSprite.pivot.y = .5;
+            backgroundSprite.position.set(-5000,-2000);
+            displayStage.addChild(backgroundSprite);
             displayStage.updateLayersOrder();
-            console.log('assets loaded');
 
         }
     };

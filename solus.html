@@ -17,11 +17,13 @@
 	<script type="text/javascript" src="src/ui.js"></script>
 	<script type="text/javascript" src="src/projectile.js"></script>
 	<script type="text/javascript" src="src/encounter.js"></script>
+	<script type="text/javascript" src="src/sound.js"></script>
 	
 
 
 
 <body>
+<div id="mainBackground"> </div>
 <div id="pauseScreen"> <span>Paused</span> </div>
 <div id="gameMenu" class="menu"> 
 	<ul>
@@ -33,14 +35,16 @@
 	</ul>
 </div>
 <div id="mainMenu" class="menu"> 
-	<header> Solus </header>
-	<ul>
-		<li id="newGame"> New Game </li>
-		<li id="continue"> Continue </li>
-		<li id="mainOptions"> Options </li>
-		<li id="mainControls"> Controls </li>
-		<li id="credits"> Credits </li>
-	</ul>
+	<div>
+		<header> Solus </header>
+		<ul>
+			<li id="newGame"> New Game </li>
+			<li id="continue"> Continue </li>
+			<li id="mainOptions"> Options </li>
+			<li id="mainControls"> Controls </li>
+			<li id="credits"> Credits </li>
+		</ul>
+	</div>
 </div>
 <div id="gameOverScreen"> <span>Game Over</span> </div>
 <div id="hud">  </div>
@@ -60,6 +64,10 @@
 	<p> Sweep Lasers Enter (hold) </p>
 	<p> Pause/Menu : Esc </p>
  </div>
- <div id="creditsScreen"> </div>
+ <div id="creditsScreen"> 
+ 	<p> Created by Margaret Dorsey </p>
+ 	<p> Using the Pixi.js Rendering Engine </p>
+ 	<p> Background Music by ErikMMusic </p>
+ </div>
 </body>
 </html>

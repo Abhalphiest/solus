@@ -64,7 +64,7 @@ solus.loader = function(){
 		
 
 		function onResponseReceived(){
-			console.log(callback);
+			//console.log(callback);
 			callback(request.response);
 			loadCount--;
 		}
@@ -72,12 +72,12 @@ solus.loader = function(){
 
 	obj.loadAsset = function(resource, next){
 		assetsStarted = true;
-		console.log('loading asset');
+		//console.log('loading asset');
 		assetsLoading++;
 		next();
 	}
 	obj.finalizeAsset = function(){
-		console.log('finalizing asset');
+		//console.log('finalizing asset');
 		assetsLoading--;
 	};
 

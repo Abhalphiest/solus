@@ -45,7 +45,7 @@ solus.collision = (function (){
 				vertex.y += object.position.y;
 			});
 
-			solus.renderer.renderPolygon(collider);
+			//solus.renderer.renderPolygon(collider);
 			
 			// check against projectiles
 			for(var j = 0; j < projectiles.length; j++){
@@ -54,8 +54,8 @@ solus.collision = (function (){
 				switch(projectile.type){
 					case "bullet":
 						if(checkPointCollision(projectile.position, collider)){
-							//projectile.onCollision();
-							//object.onCollision();
+							projectile.onCollision();
+							object.onCollision();
 							console.log("collision detected");
 						}
 					break;
@@ -63,7 +63,7 @@ solus.collision = (function (){
 					 case "laser":
 					 	if(checkLineCollision(projectile.position, projectile.endPoint,collider)){
 					// 		projectile.onCollision();
-					// 		object.onCollision();
+					 		object.onCollision();
 							console.log("collision detected");
 					 	}
 					 break;
@@ -159,8 +159,26 @@ solus.collision = (function (){
 	  return (A > B) ? 1 : (A  < B) ? -1 : 0;
 	}
 
-	function intersects(p1, p2, p3, p4) {
-	  return (turn(p1, p3, p4) != turn(p2, p3, p4)) && (turn(p1, p2, p3) != turn(p1, p2, p4));
+	function intersects(q1, q2, q3, q4) {
+		var p1, p2, p3, p4;
+		if(q2.x < q1.x){
+			p1 = q2;
+			p2 = q1;
+		}
+		else{
+			p1 = q1;
+			p2 = q2;
+		}
+
+		if(q4.x < q3.x){
+			p3 = q4;
+			p4 = q3;
+		}
+		else{
+			p3 = q3;
+			p4 = q4;
+		}
+	  	return (turn(p1, p3, p4) != turn(p2, p3, p4)) && (turn(p1, p2, p3) != turn(p1, p2, p4));
 	}
 	
 

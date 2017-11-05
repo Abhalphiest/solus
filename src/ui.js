@@ -62,6 +62,7 @@ solus.ui = (function(){
 		};
 		this.close = function(){
 			this.hide();
+			obj.currentMenu = undefined;
 			if(this.parent){  // kind of a linked list hierarchy
 				this.parent.show();
 				this.parent = undefined;
@@ -87,7 +88,7 @@ solus.ui = (function(){
 
 		// set up onclick events for menus
 		document.querySelector("#newGame").onclick = function(){
-			this.mainMenu.hide();
+			this.mainMenu.close();
 			solus.main.start();
 		}.bind(this);
 		document.querySelector("#resumeGame").onclick = function(){
@@ -116,8 +117,14 @@ solus.ui = (function(){
 
 
 		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 
+
+			console.log(this.currentMenu);
 			if(this.currentMenu && this.currentMenu != this.mainMenu){
 				this.currentMenu.close();
+			}
+			else if (this.currentMenu === undefined){
+				solus.main.openMenu();
+				this.gameMenu.show();
 			}
 		}.bind(this));
 	}.bind(obj));
