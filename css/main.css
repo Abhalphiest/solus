@@ -82,7 +82,6 @@ body{
 	opacity:0;
 	font-family:'Gruppo', sans-serif;
 	font-size:2em;
-	display:none;
 }
 #mainMenu div{
 	float:right;
@@ -94,7 +93,6 @@ body{
 	list-style:none;
 	margin: 0;
 	padding:0;
-	/*margin-left:15px;*/
 	color:white;
 	display:inline-block;
 	border-radius: 5px;
@@ -144,8 +142,21 @@ body{
 }
 
 #optionsMenu{
-	display:none;
+	position:absolute;
+	font-family: 'Gruppo', sans-serif;
+	color:white;
+	right: 5%;
+	margin-top: 30%;
+	
 }
+#optionsMenu .menuHeader{
+	font-size:3em;
+}
+#optionsMenu header{
+	font-size:1.5em;
+}
+
+
 
 #creditsScreen{
 	font-family: 'Gruppo', sans-serif;
@@ -153,6 +164,6 @@ body{
 	right: 10px;
 	opacity: 0;
 	display: none;
-	bottom: 10%;
+	bottom: 50%;
 	position:absolute;
 }

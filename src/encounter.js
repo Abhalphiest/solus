@@ -10,13 +10,13 @@ var solus = solus || {};
 // ---------------------------------
 
 
-// encounter constructor, takes a filepath for the .json file that has the encounter information
-function Encounter(jsonpath){
+// encounter constructor, takes a JSON object that has the encounter information
+function Encounter(encounterObj){
 	this.enemies = [];
 	this.environmentObjects = [];
 	this.backgroundIndex = 0;
 	this.load = function(){
-
+		
 	};
 	this.unload = function(){
 

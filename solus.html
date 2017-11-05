@@ -50,11 +50,31 @@
 <div id="hud">  </div>
 <div id="textOverlay"> </div>
 <div id="optionsMenu"> 
-	<header> Options </header>
-	<ul>
-		<li id="audioVolume">Volume</li>
-		<li id="particles">Particles</li>
-	</ul>
+	<header class="menuHeader"> Options </header>
+	<div>
+		
+		<section>
+			<header>Audio</header>
+			<div>
+				<input type="checkbox"><label>Background Music</label>
+				<label> Volume </label> <input type="range">
+			</div>
+			<div>
+				<input type="checkbox"><label>Background Ambient</label>
+				 <label> Volume </label> <input type="range">
+			</div>
+			<div>
+				<input type="checkbox"><label>Sound Effects</label>
+				 <label> Volume </label> <input type="range">
+			</div>
+		</section>
+		<section> 
+			<header> Performance </header>
+			<div>
+				<input type="checkbox"><label>Particles</label>
+			</div>
+		</section>
+	</div>
 </div>
 <div id="controlsScreen">
 	<p> Move: WASD / Arrow Keys </p>

@@ -87,10 +87,32 @@ solus.main =(function(){
 
 	mainobj.encounters = function(){
 		var obj = {};
+		var encounters = []; // actual encounters, but must have .load called on them to run.
+		var tutorial = undefined;
+		var currentEncounter = undefined;
+
+		obj.endEncounter= function(){
+
+		};
+
+		obj.startEncounter = function(){
+
+		};
+
 
 		obj.update = function(){
 
 		};
+
+		// load encounters from json file
+		addOnLoadEvent(function(){
+			solus.loader.loadJSON("assets/encounters.json", function(data){
+				var tutorial = new Encounter(data.objects.tutorial);
+				data.objects.encounters.forEach(function(encounterData){
+					encounters.push(new Encounter(encounterData));
+				});
+			});	
+		});
 
 		return obj;
 	}();
