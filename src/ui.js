@@ -31,6 +31,18 @@ solus.ui = (function(){
 
 	obj.gameOverScreen = {
 		element: undefined,
+		quoteText: undefined,
+		quoteAttrib: undefined,
+		quotes: [],
+		show: function(){
+
+			this.element.style.display = "block";
+			this.element.style.opacity = 1;
+		},
+		hide: function(){
+			this.element.style.opacity = 0;
+			window.setTimeout(function(){this.element.style.display = "none";}.bind(this), 200);
+		}
 	};
 
 	obj.hud = {
@@ -88,7 +100,8 @@ solus.ui = (function(){
 
 		// set up onclick events for menus
 		document.querySelector("#newGame").onclick = function(){
-			this.mainMenu.close();
+			this.mainMenu.hide();
+			this.currentMenu = undefined;
 			solus.main.start();
 		}.bind(this);
 		document.querySelector("#resumeGame").onclick = function(){
@@ -126,6 +139,11 @@ solus.ui = (function(){
 				solus.main.openMenu();
 				this.gameMenu.show();
 			}
+		}.bind(this));
+
+		solus.loader.loadJSON("assets/strings/quotes.json", function(data){
+				this.gameOverScreen.quotes = data.quotes;
+				console.log(this.gameOverScreen.quotes);
 		}.bind(this));
 	}.bind(obj));
 

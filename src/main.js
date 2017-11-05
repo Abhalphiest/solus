@@ -9,11 +9,9 @@ var solus = solus || {};
 
 solus.main =(function(){
 
-	var obj = {};
+	var mainobj = {};
 	var i = 0; // what is this used for?
 	var animationRequestId;
-
-	var encounter;
 
 	var GameState = Object.freeze({
 		GAMEPLAY: 0,
@@ -24,31 +22,28 @@ solus.main =(function(){
 	});
 
 
-	obj.gameState = GameState.LOADING; // we start loading first
+	mainobj.gameState = GameState.LOADING; // we start loading first
 
 	// all our resources are loaded when this is called
 
-	obj.launch = function(){
+	mainobj.launch = function(){
 
-		if(obj.gameState === GameState.LOADING){
-			obj.gameState = GameState.MENU;
+		// prep things
+
+		if(mainobj.gameState === GameState.LOADING){
+			mainobj.gameState = GameState.MENU;
 			solus.ui.mainMenu.show();
 		}
 
-		// prep stuff while we wait
-		encounter = new Encounter();
-		encounter.enemies.push(new Enemy(new Vector(700,300), Math.PI/2));
-		encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
-		encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
 	}
 
-	obj.start = function(){
+	mainobj.start = function(){
 		this.gameState = GameState.GAMEPLAY;
-		this.update();
+		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
 	}
 
-	obj.isPaused = function(){return this.gameState === GameState.PAUSED;};
-	obj.pause = function(){
+	mainobj.isPaused = function(){return this.gameState === GameState.PAUSED;};
+	mainobj.pause = function(){
 		if(this.gameState !== GameState.GAMEPLAY) // only pause gameplay, no need to pause a UI screen
 			return;
 		this.gameState = GameState.PAUSED; 
@@ -58,7 +53,7 @@ solus.main =(function(){
 			animationRequestId = undefined;
 		}
 	};
-	obj.resume = function(){
+	mainobj.resume = function(){
 		if(this.gameState !== GameState.MENU){
 			this.gameState = GameState.GAMEPLAY; 
 			solus.ui.pauseScreen.hide();
@@ -67,17 +62,38 @@ solus.main =(function(){
 			}
 		}
 	};
-	obj.openMenu = function(){
+	mainobj.openMenu = function(){
 		this.pause();
 		this.gameState = GameState.MENU;
 	}
-	obj.closeMenu = function(){
+	mainobj.closeMenu = function(){
 		this.gameState = GameState.PAUSED;
 		this.resume();
 	}
-	window.onblur = obj.pause.bind(obj);
-	window.onfocus = obj.resume.bind(obj);
+	window.onblur = mainobj.pause.bind(mainobj);
+	window.onfocus = mainobj.resume.bind(mainobj);
 
+	
+
+	mainobj.update = function(){
+		player.update();
+		this.encounters.update();
+		solus.collision.update();
+		solus.renderer.render();
+		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
+	};
+
+	// ENCOUNTER MANAGEMENT
+
+	mainobj.encounters = function(){
+		var obj = {};
+
+		obj.update = function(){
+
+		};
+
+		return obj;
+	}();
 
 	// PLAYER LOGIC
 
@@ -88,12 +104,12 @@ solus.main =(function(){
 	});
 	var player = function(){
 		var MAX_LASER_POWER = 100;
+		var maxSpeed = 5;
 		var obj = {
 			position: new Vector(500, 500),
 			velocity: new Vector(),
 			acceleration: new Vector(),
 			angle: 0,
-			maxSpeed: 5,
 			damageState: 0, // ranged from 0 to 5, no damage to destroyed
 			accelerationDropoff: 1,
 			activeCannon: 0, // front by default
@@ -154,15 +170,14 @@ solus.main =(function(){
 				}
 
 
+				// accelerate
+				this.velocity = vectorAdd(this.velocity, this.acceleration);
 
 				// clamp speed
-				this.velocity.clampLength(0,this.maxSpeed);
+				this.velocity.clampLength(0,maxSpeed);
 				// eventually stop drifting (once it is no longer noticeable movement) so we can check against 0
 				if(this.velocity.getLength() < 0.1)
 					this.velocity.setLength(0);
-
-				// accelerate
-				this.velocity = vectorAdd(this.velocity, this.acceleration);
 				
 				// if we're going forward
 				if(this.velocity.getLength() != 0 && dotProduct(this.velocity, getUnitVectorFromAngle(this.angle)) >= 0){
@@ -176,7 +191,7 @@ solus.main =(function(){
 
 				// move the ship, presumably
 				this.position = vectorAdd(this.position, this.velocity);
-				solus.renderer.updatePlayerSprite(player.position.x,player.position.y, player.angle, emit);
+				solus.renderer.updatePlayerSprite(this.position.x,this.position.y, this.angle, emit);
 
 				var removeIndices = []; // not even kind of worth it to try to remove things from the array as we iterate over it
 
@@ -296,21 +311,7 @@ solus.main =(function(){
 
 
 
-	obj.update = function(){
-		player.update();
-		if(encounter)// && player.velocity.getLength() !== 0)
-			encounter.update();
-		solus.collision.update();
-		solus.renderer.render();
-		animationRequestId = window.requestAnimationFrame(obj.update);
-	};
-
-	addOnLoadEvent(function(){
-		
-	
-	}.bind(obj));
-	
 	
 
-	return obj;
+	return mainobj;
 }());
