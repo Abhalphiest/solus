@@ -60,12 +60,13 @@ solus.collision = (function (){
 						}
 					break;
 
-					// case "laser":
-					// 	if(checkLineCollision(projectile.position, projectile.endPoint,object.sprite.colliders)){
+					 case "laser":
+					 	if(checkLineCollision(projectile.position, projectile.endPoint,collider)){
 					// 		projectile.onCollision();
 					// 		object.onCollision();
-					// 	}
-					// break;
+							console.log("collision detected");
+					 	}
+					 break;
 
 					// case "EMP":
 					// 	if(checkPointCollision(projectile.position, object.sprite.colliders)){
@@ -136,6 +137,12 @@ solus.collision = (function (){
 	}
 
 	function checkLineCollision(startPoint, endPoint, collider){
+		for(var i = 0; i < collider.length; i++){
+			var nextpoint = i + 1 < collider.length? collider[i+1] : collider[0];
+			if(intersects(startPoint,endPoint,collider[i], nextpoint))
+				return true;
+		}
+
 		return false;
 	}
 
