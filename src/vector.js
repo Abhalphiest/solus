@@ -77,3 +77,7 @@ function vectorSubtract(v1,v2){
 function dotProduct(v1,v2){
 	return v1.x*v2.x + v1.y*v2.y;
 }
+
+function getOrthoNormalVector(vector){
+	return new Vector(vector.y, -vector.x).normalized();
+}

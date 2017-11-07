@@ -47,6 +47,9 @@ function GameObject(){
 	};
 	this.destroy = function(){
 	};
+	this.onCollision = function(){
+
+	};
 	
 }
 
@@ -70,7 +73,7 @@ function Enemy(position, angle){
 	}
 	this.onCollision = function(object){
 		console.log('game object is colliding');
-		this.destroy();
+		//this.destroy();
 	};
 	solus.collision.addObject(this);
 }

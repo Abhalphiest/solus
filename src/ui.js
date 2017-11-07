@@ -143,7 +143,6 @@ solus.ui = (function(){
 
 		solus.loader.loadJSON("assets/strings/quotes.json", function(data){
 				this.gameOverScreen.quotes = data.quotes;
-				console.log(this.gameOverScreen.quotes);
 		}.bind(this));
 	}.bind(obj));
 

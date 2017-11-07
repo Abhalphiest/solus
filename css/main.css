@@ -142,6 +142,7 @@ body{
 }
 
 #optionsMenu{
+	display:none;
 	position:absolute;
 	font-family: 'Gruppo', sans-serif;
 	color:white;

@@ -12,6 +12,7 @@ solus.main =(function(){
 	var mainobj = {};
 	var i = 0; // what is this used for?
 	var animationRequestId;
+	var encounter;
 
 	var GameState = Object.freeze({
 		GAMEPLAY: 0,
@@ -34,6 +35,15 @@ solus.main =(function(){
 			mainobj.gameState = GameState.MENU;
 			solus.ui.mainMenu.show();
 		}
+
+		// prep stuff while we wait
+ 		encounter = new Encounter();
+ 		encounter.enemies.push(new Enemy(new Vector(400,100), Math.PI/2));
+ 		encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
+ 		//encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
+
+ 		player.sprite = solus.renderer.getPlayerSprite();
+ 		solus.collision.addObject(player);
 
 	}
 
@@ -77,7 +87,7 @@ solus.main =(function(){
 
 	mainobj.update = function(){
 		player.update();
-		this.encounters.update();
+		encounter.update();
 		solus.collision.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
@@ -138,6 +148,7 @@ solus.main =(function(){
 			laserPower: MAX_LASER_POWER, // time in frames we can have lasers up for
 			bullets: [],
 			lasers:[],
+			sprite: undefined,
 			update: function(){
 
 				// --------------------------------

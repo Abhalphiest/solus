@@ -145,7 +145,7 @@ solus.renderer = (function(){
     }
     addOnLoadEvent(init);
 
-    
+    obj.getPlayerSprite = function(){return playerSprite;};
 
     // TODO: make dt function, will want it elsewhere anyways
     var elapsed = Date.now();

@@ -78,13 +78,19 @@ solus.collision = (function (){
 			}
 
 			//check against objects that haven't already been checked
-			// for(var k = i+1; k < objects.length; i++){
-			// 	var object2 = objects[k];
-			// 	if(checkObjectCollision(object.sprite.colliders, object2.sprite.colliders)){
-			// 		object.onCollision();
-			// 		object2.onCollision();
-			// 	}
-			// }
+			for(var k = i+1; k < objects.length; k++){
+				var object2 = objects[k];
+				var collider2 = rotatePolygon(object2.sprite.collider, object2.angle);
+				collider2.forEach(function(vertex){
+					vertex.x += object2.position.x;
+					vertex.y += object2.position.y;
+				});
+				if(checkObjectCollision(collider, collider2)){
+					console.log('collision');
+					//object.onCollision();
+					//object2.onCollision();
+				}
+			}
 
 		}
 	};
@@ -130,10 +136,71 @@ solus.collision = (function (){
 	
 
 	function checkObjectCollision(collider1, collider2){
-		// checks bounding circles first, to cull out all obvious non-collisions
 
-		return false;
+		var c1normals = getPolygonNormals(collider1);
+		var c2normals = getPolygonNormals(collider2);
+
 		// now the separating axis theorem test
+		var colliding = true;
+
+
+		// for each of the first set of normals
+		c1normals.forEach(function(axis){
+			// project each vertex on to the axis
+			var maxProjection1 = -Infinity;
+			var minProjection1 = Infinity;
+			var maxProjection2 = -Infinity;
+			var minProjection2 = Infinity;
+			var projectedMag;
+			collider1.forEach(function(vertex){
+				projectedMag = dotProduct(vertex,axis);
+				if(projectedMag < minProjection1)
+					minProjection1 = projectedMag;
+				if(projectedMag > maxProjection1)
+					maxProjection1 = projectedMag;
+			});
+			collider2.forEach(function(vertex){
+				projectedMag = dotProduct(vertex,axis);
+				if(projectedMag < minProjection2)
+					minProjection2 = projectedMag;
+				if(projectedMag > maxProjection2)
+					maxProjection2 = projectedMag;
+			});
+			if(maxProjection1 < minProjection2 || maxProjection2 < minProjection1)
+				colliding =  false; // there is a gap between the polygons, no collision
+
+		});
+
+		c2normals.forEach(function(axis){
+			// project each vertex on to the axis
+			var maxProjection1 = -Infinity;
+			var minProjection1 = Infinity;
+			var maxProjection2 = -Infinity;
+			var minProjection2 = Infinity;
+			var projectedMag;
+			collider1.forEach(function(vertex){
+				projectedMag = dotProduct(vertex,axis);
+				if(projectedMag < minProjection1)
+					minProjection1 = projectedMag;
+				if(projectedMag > maxProjection1)
+					maxProjection1 = projectedMag;
+			});
+			collider2.forEach(function(vertex){
+				projectedMag = dotProduct(vertex,axis);
+				if(projectedMag < minProjection2)
+					minProjection2 = projectedMag;
+				if(projectedMag > maxProjection2)
+					maxProjection2 = projectedMag;
+			});
+
+			if(maxProjection1 < minProjection2 || maxProjection2 < minProjection1)
+				colliding =  false; // there is a gap between the polygons, no collision
+
+		});
+		return colliding; // they are colliding if we got through all the axes
+
+
+		
 	}
 
 	function checkLineCollision(startPoint, endPoint, collider){
@@ -185,10 +252,6 @@ solus.collision = (function (){
 	return obj;
 }());
 
-function getPolygonEdges(polygon){
-
-}
-
 function rotatePolygon(polygon, angle){
 	var rotatedPolygon = [];
 	for(var i = 0; i < polygon.length; i++){
@@ -198,6 +261,21 @@ function rotatePolygon(polygon, angle){
 	}
 
 	return rotatedPolygon;
+}
+
+
+// could do something much simpler for rectangles,
+// but making this as abstract as possible to allow for
+// generic polygon colliders in the future
+function getPolygonNormals(polygon){
+	var normals = [];
+	for(var i = 0; i < polygon.length-1; i++){
+		var edge = vectorSubtract(polygon[i+1], polygon[i]);
+		normals.push(getOrthoNormalVector(edge));	
+	}
+	normals.push(getOrthoNormalVector(vectorSubtract(polygon[0], polygon[polygon.length-1])));
+	return normals;
+	
 }
 
 
