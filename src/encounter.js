@@ -12,13 +12,33 @@ var solus = solus || {};
 
 // encounter constructor, takes a JSON object that has the encounter information
 function Encounter(encounterObj){
+	var obj = encounterObj;
 	this.enemies = [];
 	this.environmentObjects = [];
 	this.backgroundIndex = 0;
 	this.load = function(){
-		
+		obj.enemies.forEach(function(enemy){
+			switch(enemy.type){
+				case "basic":
+					this.enemies.push(new Enemy(enemy.position,enemy.angle));
+				break;
+			}
+		}.bind(this));
+		obj.objects.forEach(function(object){
+			switch(object.type){
+				case "asteroid":
+					this.environmentObjects.push(new DestructibleObject(object.position,object.angle));
+				break;
+			}
+		}.bind(this));
 	};
 	this.unload = function(){
+		this.enemies.forEach(function(enemy){
+			enemy.destroy();
+		});
+		this.environmentObjects.forEach(function(object){
+			object.destroy();
+		});
 
 	};
 	this.update = function(){
@@ -27,6 +47,9 @@ function Encounter(encounterObj){
 				enemy.update();
 			
 		})
+		this.environmentObjects.forEach(function(object){
+			object.update;
+		});
 
 	};
 }
@@ -51,6 +74,15 @@ function GameObject(){
 
 	};
 	
+}
+
+function DestructibleObject(position, angle){
+
+
+}
+
+function IndestructibleObject(position, angle){
+
 }
 
 // base enemy constructor

@@ -108,6 +108,7 @@ solus.ui = (function(){
 			this.gameMenu.close();
 		}.bind(this);
 		document.querySelector("#gameOptions").onclick = function(){
+			console.log('clicked');
 			this.optionsMenu.show();
 		}.bind(this);
 		document.querySelector("#mainOptions").onclick = function(){

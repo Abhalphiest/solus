@@ -124,14 +124,15 @@ body{
 #controlsScreen{
 	position:absolute;
 	z-index: 10;
-	top:50%;
 	width: 100%;
+	margin-top: 10%;
+	height: 65%;
+	background-color: rgba(0,0,0,.98);
 	padding-left: 40%;
 	opacity:0;
 	font-family:'Gruppo', sans-serif;
-	font-size:2em;
+	font-size:1.25em;
 	text-align: left;
-	background-color: rgba(0, 0, 0, .5);
 	color: white;
 	display:none;
 }
@@ -143,18 +144,29 @@ body{
 
 #optionsMenu{
 	display:none;
+	opacity:0;
 	position:absolute;
 	font-family: 'Gruppo', sans-serif;
 	color:white;
-	right: 5%;
-	margin-top: 30%;
-	
+	width: 100%;
+	margin-top: 10%;
+	height: 65%;
+	background-color: rgba(0,0,0,.98);
+	padding-left: 40%;
+	border-radius:5px;	
+	text-align: left;
+	z-index:10;
 }
-#optionsMenu .menuHeader{
-	font-size:3em;
-}
+
 #optionsMenu header{
 	font-size:1.5em;
+}
+.menuHeader{
+	font-size:3em;
+}
+
+#optionsMenu section{
+	text-align: left;
 }
 
 
@@ -167,4 +179,163 @@ body{
 	display: none;
 	bottom: 50%;
 	position:absolute;
+}
+
+
+/*From http://danielstern.ca/range.css/#/*/
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 7.1px 0;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8.8px;
+  cursor: pointer;
+  box-shadow: 0.2px 0.2px 1px #ffffff, 0px 0px 0.2px #ffffff;
+  background: rgba(0, 0, 0, 0.58);
+  border-radius: 0px;
+  border: 0.2px solid #ffffff;
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: 3.9px 3.9px 5.9px rgba(0, 0, 0, 0.17), 0px 0px 3.9px rgba(13, 13, 13, 0.17);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  height: 23px;
+  width: 31px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7.3px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: rgba(54, 54, 54, 0.58);
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 8.8px;
+  cursor: pointer;
+  box-shadow: 0.2px 0.2px 1px #ffffff, 0px 0px 0.2px #ffffff;
+  background: rgba(0, 0, 0, 0.58);
+  border-radius: 0px;
+  border: 0.2px solid #ffffff;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: 3.9px 3.9px 5.9px rgba(0, 0, 0, 0.17), 0px 0px 3.9px rgba(13, 13, 13, 0.17);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  height: 23px;
+  width: 31px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 8.8px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: rgba(0, 0, 0, 0.58);
+  border: 0.2px solid #ffffff;
+  border-radius: 0px;
+  box-shadow: 0.2px 0.2px 1px #ffffff, 0px 0px 0.2px #ffffff;
+}
+input[type=range]::-ms-fill-upper {
+  background: rgba(0, 0, 0, 0.58);
+  border: 0.2px solid #ffffff;
+  border-radius: 0px;
+  box-shadow: 0.2px 0.2px 1px #ffffff, 0px 0px 0.2px #ffffff;
+}
+input[type=range]::-ms-thumb {
+  box-shadow: 3.9px 3.9px 5.9px rgba(0, 0, 0, 0.17), 0px 0px 3.9px rgba(13, 13, 13, 0.17);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  height: 23px;
+  width: 31px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  height: 8.8px;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: rgba(0, 0, 0, 0.58);
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: rgba(54, 54, 54, 0.58);
+}
+
+
+ /*From https://codepen.io/CreativeJuiz/pen/BiHzp*/
+/* Base for label styling */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+[type="checkbox"]:not(:checked) + label,
+[type="checkbox"]:checked + label {
+  position: relative;
+  padding-left: 1.95em;
+  cursor: pointer;
+}
+
+/* checkbox aspect */
+[type="checkbox"]:not(:checked) + label:before,
+[type="checkbox"]:checked + label:before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 1em; height: 1em;
+  border: 2px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
+}
+/* checked mark aspect */
+[type="checkbox"]:not(:checked) + label:after,
+[type="checkbox"]:checked + label:after {
+  content: '✔';
+  position: absolute;
+  top: .1em; left: .3em;
+  font-size: 1.3em;
+  line-height: 0.8;
+  color: #09ad7e;
+  transition: all .2s;
+}
+/* checked mark aspect changes */
+[type="checkbox"]:not(:checked) + label:after {
+  opacity: 0;
+  transform: scale(0);
+}
+[type="checkbox"]:checked + label:after {
+  opacity: 1;
+  transform: scale(1);
+}
+/* disabled checkbox */
+[type="checkbox"]:disabled:not(:checked) + label:before,
+[type="checkbox"]:disabled:checked + label:before {
+  box-shadow: none;
+  border-color: #bbb;
+  background-color: #ddd;
+}
+[type="checkbox"]:disabled:checked + label:after {
+  color: #999;
+}
+[type="checkbox"]:disabled + label {
+  color: #aaa;
+}
+/* accessibility */
+/*[type="checkbox"]:checked:focus + label:before,
+[type="checkbox"]:not(:checked):focus + label:before {
+  border: 2px dotted blue;
+}*/
+
+/* hover style just for information */
+label:hover:before {
+  border: 2px solid #4778d9!important;
 }

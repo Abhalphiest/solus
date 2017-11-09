@@ -5,7 +5,42 @@
 
 		],
 		"tutorial":{
+			"enemies":[
+				{
+					"type": "basic",
+					"position": {
+						"x": 200,
+						"y": 400
+					},
+					"angle": 2.16
+				},
+				{
+					"type": "basic",
+					"position": {
+						"x": 400,
+						"y": 650
+					},
+					"angle": 1.48
+				}
+			],
+			"objects":[
+				{
+					"type": "asteroid",
+					"position": {
+						"x": 800,
+						"y": 125
+					},
+					"angle": 4.89
+				}
+			],
+			"events":[
+				{
+					"trigger":"oncompletion",
+					"action":"displayTextLog",
+					"resource":"null"
+				}
 
+			]
 		}
 	}
 }

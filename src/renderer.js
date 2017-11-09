@@ -23,8 +23,16 @@ solus.renderer = (function(){
     var playerEmitter;
     var playerEmitterContainer;
     var playerContainer;
-    
-    var background;
+
+
+    var BACKGROUND_WIDTH = 1920;
+    var background = {
+        index: 2,
+        transitioning: false,
+        transitionIndex: -1,
+        transitionTexture: "",
+    }
+    var backgroundPanels = [];
     var basicEnemy = {};
     var bullet = {};
 
@@ -53,13 +61,14 @@ solus.renderer = (function(){
         playerContainer.zIndex = 2;
         playerEmitterContainer = new PIXI.Container();
         playerEmitterContainer.zIndex = 1;
-        background = new PIXI.Container();
 
         debugRenderer = new PIXI.Graphics();
         debugRenderer.zIndex = 2;
         displayStage.addChild(debugRenderer);
 
         solus.loader.loadJSON("assets/sprites.json", setUpSprites);
+
+        // TODO: make particle systems also loaded JSON
         
         // make particle trail for player
         playerEmitter = new PIXI.particles.Emitter(
@@ -147,7 +156,7 @@ solus.renderer = (function(){
 
     obj.getPlayerSprite = function(){return playerSprite;};
 
-    // TODO: make dt function, will want it elsewhere anyways
+    // TODO: make dt function, will want it elsewhere anyways, probably? If I ever get around to variable timestep physics?
     var elapsed = Date.now();
     obj.updatePlayerSprite = function(x,y,rotation, emit){
 
@@ -238,13 +247,10 @@ solus.renderer = (function(){
         object.rotation = angle;
 
         
-        // var rotCollider = rotatePolygon(object.collider, angle);
-        // debugRenderer.beginFill().moveTo(rotCollider[0].x + position.x, rotCollider[0].y+position.y);
-        // for(var i = 1; i < rotCollider.length; i++)
-        //     debugRenderer.lineTo(rotCollider[i].x + position.x, rotCollider[i].y+position.y);
-        // debugRenderer.lineTo(rotCollider[0].x + position.x, rotCollider[0].y+position.y).endFill();
     }
 
+
+    // debug renderer functions (for debugging, in case that wasn't obvious)
     obj.renderPolygon = function(polygon){
         debugRenderer.beginFill().moveTo(polygon[0].x, polygon[0].y);
         for(var i = 1; i < polygon.length; i++)
@@ -259,6 +265,24 @@ solus.renderer = (function(){
 
 
     obj.render = function(){
+        // update the background
+        if(displayStage.pivot.x - backgroundPanels[background.index].position.x >= BACKGROUND_WIDTH){
+            background.index++;
+            background.index = background.index%backgroundPanels.length;
+
+
+            var refreshIndex = (background.index + Math.floor(backgroundPanels.length/2))%backgroundPanels.length;
+            backgroundPanels[refreshIndex].position.x += backgroundPanels.length*BACKGROUND_WIDTH;
+            if(background.transitioning){
+                //console.log('changing background');
+                backgroundPanels[(background.index+1)%backgroundPanels.length].texture = background.transitionTexture;
+                if((background.index+1)%backgroundPanels.length === background.transitionIndex){
+                    //console.log('end transition');
+                    background.transitioning = false;
+                }
+            }
+        }
+
         if(pixiRenderer){
             pixiRenderer.render(displayStage);
         }
@@ -270,7 +294,9 @@ solus.renderer = (function(){
         PIXI.loader
             .add(assets.spritePath + assets.player.sprite)
             .add(assets.spritePath + assets.basicEnemy.sprite)
-            .add("assets/environments/galaxy2.jpg")
+            .add("assets/environments/background2.jpg")
+            .add("assets/environments/background1.jpg")
+            .add("assets/environments/backgroundtransition12.jpg")
             .add(assets.spritePath + assets.bullet.sprite)
             .pre(solus.loader.loadAsset)
             .on("progress", solus.loader.finalizeAsset)
@@ -298,15 +324,47 @@ solus.renderer = (function(){
             displayStage.addChild(playerContainer);
             displayStage.updateLayersOrder();
 
-            var backgroundSprite = new PIXI.extras.TilingSprite(pixiResources["assets/environments/galaxy2.jpg"].texture, 10000000 , 10000);
-            backgroundSprite.zIndex = -1;
-            backgroundSprite.pivot.x = .5;
-            backgroundSprite.pivot.y = .5;
-            backgroundSprite.position.set(-5000,-2000);
-            displayStage.addChild(backgroundSprite);
+            backgroundPanels[0] = new PIXI.extras.TilingSprite(pixiResources["assets/environments/background1.jpg"].texture, BACKGROUND_WIDTH , 100000);
+            backgroundPanels[0].zIndex = -1;
+            backgroundPanels[0].pivot.x = .5;
+            backgroundPanels[0].pivot.y = .5;
+            backgroundPanels[0].position.set(-5*BACKGROUND_WIDTH/2,-50000);
+            displayStage.addChild(backgroundPanels[0]);
+            backgroundPanels[1] = new PIXI.extras.TilingSprite(pixiResources["assets/environments/background1.jpg"].texture, BACKGROUND_WIDTH , 100000);
+            backgroundPanels[1].zIndex = -1;
+            backgroundPanels[1].pivot.x = .5;
+            backgroundPanels[1].pivot.y = .5;
+            backgroundPanels[1].position.set(-3*BACKGROUND_WIDTH/2,-50000);
+            displayStage.addChild(backgroundPanels[1]);
+            backgroundPanels[2] = new PIXI.extras.TilingSprite(pixiResources["assets/environments/background1.jpg"].texture, BACKGROUND_WIDTH , 100000);
+            backgroundPanels[2].zIndex = -1;
+            backgroundPanels[2].pivot.x = .5;
+            backgroundPanels[2].pivot.y = .5;
+            backgroundPanels[2].position.set(-BACKGROUND_WIDTH/2,-50000);
+            displayStage.addChild(backgroundPanels[2]);
+            backgroundPanels[3] = new PIXI.extras.TilingSprite(pixiResources["assets/environments/background1.jpg"].texture, BACKGROUND_WIDTH , 100000);
+            backgroundPanels[3].zIndex = -1;
+            backgroundPanels[3].pivot.x = .5;
+            backgroundPanels[3].pivot.y = .5;
+            backgroundPanels[3].position.set(BACKGROUND_WIDTH/2,-50000);
+            displayStage.addChild(backgroundPanels[3]);
+            backgroundPanels[4] = new PIXI.extras.TilingSprite(pixiResources["assets/environments/background1.jpg"].texture, BACKGROUND_WIDTH , 100000);
+            backgroundPanels[4].zIndex = -1;
+            backgroundPanels[4].pivot.x = .5;
+            backgroundPanels[4].pivot.y = .5;
+            backgroundPanels[4].position.set(3*BACKGROUND_WIDTH/2,-50000);
+            displayStage.addChild(backgroundPanels[4]);
             displayStage.updateLayersOrder();
 
         }
+    };
+
+
+    obj.changeBackground = function(index){
+        background.transitioning = true;
+        background.transitionIndex = (background.index+1)%backgroundPanels.length;
+        background.transitionTexture = pixiResources["assets/environments/background"+index+".jpg"].texture;
+        backgroundPanels[background.transitionIndex].texture = pixiResources["assets/environments/backgroundtransition1"+index+".jpg"].texture;
     };
 
     return obj;

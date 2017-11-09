@@ -37,10 +37,7 @@ solus.main =(function(){
 		}
 
 		// prep stuff while we wait
- 		encounter = new Encounter();
- 		encounter.enemies.push(new Enemy(new Vector(400,100), Math.PI/2));
- 		encounter.enemies.push(new Enemy(new Vector(200,100), -Math.PI));
- 		//encounter.enemies.push(new Enemy(new Vector(900, 500), Math.PI/4));
+ 		this.encounters.startEncounter();
 
  		player.sprite = solus.renderer.getPlayerSprite();
  		solus.collision.addObject(player);
@@ -87,7 +84,7 @@ solus.main =(function(){
 
 	mainobj.update = function(){
 		player.update();
-		encounter.update();
+		this.encounters.update(player.position.x);
 		solus.collision.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
@@ -100,24 +97,35 @@ solus.main =(function(){
 		var encounters = []; // actual encounters, but must have .load called on them to run.
 		var tutorial = undefined;
 		var currentEncounter = undefined;
+		var currentProgress = 0;
 
 		obj.endEncounter= function(){
 
 		};
 
 		obj.startEncounter = function(){
-
+			tutorial.load();
+			currentEncounter = tutorial;
 		};
 
+		var bgIndex = 1;
+		obj.update = function(progress){
+			//console.log(progress);
+			if(progress > currentProgress);
+				currentProgress = progress;
 
-		obj.update = function(){
-
+			if(bgIndex == 1 && currentProgress > 1000){
+				bgIndex++;
+				solus.renderer.changeBackground(bgIndex);
+			}
+			if(currentEncounter)
+				currentEncounter.update();
 		};
 
 		// load encounters from json file
 		addOnLoadEvent(function(){
 			solus.loader.loadJSON("assets/encounters.json", function(data){
-				var tutorial = new Encounter(data.objects.tutorial);
+				tutorial = new Encounter(data.objects.tutorial);
 				data.objects.encounters.forEach(function(encounterData){
 					encounters.push(new Encounter(encounterData));
 				});
@@ -138,7 +146,7 @@ solus.main =(function(){
 		var MAX_LASER_POWER = 100;
 		var maxSpeed = 5;
 		var obj = {
-			position: new Vector(500, 500),
+			position: new Vector(0, 500),
 			velocity: new Vector(),
 			acceleration: new Vector(),
 			angle: 0,
