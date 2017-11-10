@@ -46,6 +46,7 @@ solus.main =(function(){
 
 	mainobj.start = function(){
 		this.gameState = GameState.GAMEPLAY;
+		solus.sound.toggleBGMusic();
 		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
 	}
 

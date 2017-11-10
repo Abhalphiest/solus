@@ -18,7 +18,7 @@ solus.sound = (function(){
 	var soundEffects = undefined;
 
 	obj.toggleBGMusic = function(){
-
+		backgroundMusic.play();
 	};
 
 	obj.setBGMusicVolume = function(){
@@ -64,8 +64,14 @@ solus.sound = (function(){
     		this.currentTime = 0;
     		this.play();
 		}, false);
-		backgroundMusic.play();
 
+		ambientBackground.volume = .5; // default value? until options are set up
+		ambientBackground.src = "assets/audio/ambient.mp3";
+		ambientBackground.addEventListener('ended', function() {
+    		this.currentTime = 0;
+    		this.play();
+		}, false);
+		ambientBackground.play();
 	});
 	return obj;
 
