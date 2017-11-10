@@ -84,7 +84,7 @@ solus.main =(function(){
 
 	mainobj.update = function(){
 		player.update();
-		this.encounters.update(player.position.x);
+		this.encounters.update(player.position.x, player);
 		solus.collision.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
@@ -109,7 +109,7 @@ solus.main =(function(){
 		};
 
 		var bgIndex = 1;
-		obj.update = function(progress){
+		obj.update = function(progress, player){
 			//console.log(progress);
 			if(progress > currentProgress);
 				currentProgress = progress;
@@ -119,7 +119,7 @@ solus.main =(function(){
 				solus.renderer.changeBackground(bgIndex);
 			}
 			if(currentEncounter)
-				currentEncounter.update();
+				currentEncounter.update(player);
 		};
 
 		// load encounters from json file

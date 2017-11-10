@@ -41,10 +41,10 @@ function Encounter(encounterObj){
 		});
 
 	};
-	this.update = function(){
+	this.update = function(player){
 		this.enemies.forEach(function(enemy){
 			if(enemy.active)
-				enemy.update();
+				enemy.update(player);
 			
 		})
 		this.environmentObjects.forEach(function(object){
@@ -95,7 +95,15 @@ function Enemy(position, angle){
 		this.position = position;
 	if(angle)
 		this.angle = angle;
-	this.update = function(){
+	this.update = function(player){
+		var seekForce = seek.call(this, player.position);
+		this.acceleration = vectorAdd(this.acceleration, seekForce);
+		this.acceleration.clampLength(0,.1);
+		this.velocity = vectorAdd(this.acceleration, this.velocity);
+		this.velocity.clampLength(0, maxSpeed);
+
+		this.position = vectorAdd(this.velocity, this.position);
+		this.angle = this.velocity.getAngle();
 		solus.renderer.updateObject(this.sprite, this.position, this.angle);
 	}
 	this.destroy = function(){
@@ -125,7 +133,9 @@ function wander(){
 
 // maneuvers towards an object
 function seek(point){
-
+	var toVec = vectorSubtract(point, this.position);
+	var force = vectorSubtract(toVec, this.velocity);
+	return force;
 }
 
 // maneuvers to avoid an oncoming object
