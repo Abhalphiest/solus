@@ -7,7 +7,7 @@
 		"tutorial":{
 			"enemies":[
 				{
-					"type": "basic",
+					"type": "light",
 					"position": {
 						"x": 200,
 						"y": 400
@@ -15,12 +15,28 @@
 					"angle": 2.16
 				},
 				{
-					"type": "basic",
+					"type": "light",
 					"position": {
 						"x": 400,
 						"y": 650
 					},
 					"angle": 1.48
+				},
+				{
+					"type":"heavy",
+					"position":{
+						"x":2000,
+						"y": 500
+					},
+					"angle": 3.14
+				},
+				{
+					"type":"mid",
+					"position":{
+						"x": 890,
+						"y": 210
+					},
+					"angle": 3.14
 				}
 			],
 			"objects":[

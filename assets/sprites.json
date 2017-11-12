@@ -24,8 +24,8 @@
 			}
 		]
 	},
-	"basicEnemy":{
-		"sprite":"basicEnemy.png",
+	"lightEnemy":{
+		"sprite":"lightEnemy.png",
 		"height": 64,
 		"width":96,
 		"collider": [
@@ -44,6 +44,52 @@
 			{
 				"x":-48,
 				"y":32
+			}
+		]
+	},
+	"midEnemy":{
+		"sprite":"midEnemy.png",
+		"height": 300,
+		"width":300,
+		"collider": [
+			{
+				"x":-150,
+				"y":-150
+			},
+			{
+				"x":150,
+				"y":-150
+			},
+			{
+				"x":150,
+				"y":150
+			},
+			{
+				"x":-150,
+				"y":150
+			}
+		]
+	},
+	"heavyEnemy":{
+		"sprite":"heavyEnemy.png",
+		"height": 1600,
+		"width": 1600,
+		"collider": [
+			{
+				"x":-800,
+				"y":-800
+			},
+			{
+				"x":800,
+				"y":-800
+			},
+			{
+				"x":800,
+				"y":800
+			},
+			{
+				"x":-800,
+				"y":800
 			}
 		]
 	},
@@ -69,5 +115,30 @@
 				"y":5
 			}
 		]
-	}
+	},
+	"asteroids":[
+		{
+			"sprite":"asteroid1.png",
+			"height": 50,
+			"width": 50,
+			"collider":[
+				{
+					"x":-25,
+					"y":-25
+				},
+				{
+					"x":25,
+					"y":-25
+				},
+				{
+					"x":25,
+					"y":25
+				},
+				{
+					"x":-25,
+					"y":25
+				}
+			]
+		}
+	]
 }

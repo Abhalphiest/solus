@@ -33,7 +33,9 @@ solus.renderer = (function(){
         transitionTexture: "",
     }
     var backgroundPanels = [];
-    var basicEnemy = {};
+    var lightEnemy = {};
+    var midEnemy = {};
+    var heavyEnemy = {};
     var bullet = {};
 
     var debugRenderer;
@@ -229,14 +231,41 @@ solus.renderer = (function(){
         laser.lineTo(endpoint.x,endpoint.y);
     }
 
-    obj.createBasicEnemy = function(){
-        var sprite = new PIXI.Sprite(basicEnemy.texture);
+    obj.createLightEnemy = function(){
+        var sprite = new PIXI.Sprite(lightEnemy.texture);
         sprite.zIndex = 2;
         sprite.anchor.x = .5;
         sprite.anchor.y = .5;
-        sprite.height = basicEnemy.height;
-        sprite.width = basicEnemy.width;
-        sprite.collider = basicEnemy.collider.slice();
+        sprite.height = lightEnemy.height;
+        sprite.width = lightEnemy.width;
+        sprite.collider = lightEnemy.collider.slice();
+        displayStage.addChild(sprite);
+        displayStage.updateLayersOrder();
+        return sprite;
+    };
+
+    obj.createMidEnemy = function(){
+        var sprite = new PIXI.Sprite(midEnemy.texture);
+        sprite.zIndex = 2;
+        sprite.anchor.x = .5;
+        sprite.anchor.y = .5;
+        sprite.height = midEnemy.height;
+        sprite.width = midEnemy.width;
+        sprite.collider = midEnemy.collider.slice();
+        displayStage.addChild(sprite);
+        displayStage.updateLayersOrder();
+        return sprite;
+
+    };
+
+    obj.createHeavyEnemy = function(){
+        var sprite = new PIXI.Sprite(heavyEnemy.texture);
+        sprite.zIndex = 2;
+        sprite.anchor.x = .5;
+        sprite.anchor.y = .5;
+        sprite.height = heavyEnemy.height;
+        sprite.width = heavyEnemy.width;
+        sprite.collider = heavyEnemy.collider.slice();
         displayStage.addChild(sprite);
         displayStage.updateLayersOrder();
         return sprite;
@@ -293,7 +322,9 @@ solus.renderer = (function(){
         // load the sprites
         PIXI.loader
             .add(assets.spritePath + assets.player.sprite)
-            .add(assets.spritePath + assets.basicEnemy.sprite)
+            .add(assets.spritePath + assets.lightEnemy.sprite)
+            .add(assets.spritePath + assets.midEnemy.sprite)
+            .add(assets.spritePath + assets.heavyEnemy.sprite)
             .add("assets/environments/background2.jpg")
             .add("assets/environments/background1.jpg")
             .add("assets/environments/backgroundtransition12.jpg")
@@ -303,10 +334,20 @@ solus.renderer = (function(){
             .load(spriteSetup);
 
         function spriteSetup(){
-            basicEnemy.texture = pixiResources[assets.spritePath + assets.basicEnemy.sprite].texture;
-            basicEnemy.width = assets.basicEnemy.width;
-            basicEnemy.height = assets.basicEnemy.height;
-            basicEnemy.collider = assets.basicEnemy.collider;
+            lightEnemy.texture = pixiResources[assets.spritePath + assets.lightEnemy.sprite].texture;
+            lightEnemy.width = assets.lightEnemy.width;
+            lightEnemy.height = assets.lightEnemy.height;
+            lightEnemy.collider = assets.lightEnemy.collider;
+
+            midEnemy.texture = pixiResources[assets.spritePath + assets.midEnemy.sprite].texture;
+            midEnemy.width = assets.midEnemy.width;
+            midEnemy.height = assets.midEnemy.height;
+            midEnemy.collider = assets.midEnemy.collider;
+
+            heavyEnemy.texture = pixiResources[assets.spritePath + assets.heavyEnemy.sprite].texture;
+            heavyEnemy.width = assets.heavyEnemy.width;
+            heavyEnemy.height = assets.heavyEnemy.height;
+            heavyEnemy.collider = assets.heavyEnemy.collider;
 
             bullet.texture = pixiResources[assets.spritePath + assets.bullet.sprite].texture;
             bullet.width = assets.bullet.width;

@@ -145,7 +145,7 @@ solus.main =(function(){
 	});
 	var player = function(){
 		var MAX_LASER_POWER = 100;
-		var maxSpeed = 5;
+		var maxSpeed = 10;
 		var obj = {
 			position: new Vector(0, 500),
 			velocity: new Vector(),

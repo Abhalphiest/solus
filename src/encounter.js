@@ -19,8 +19,14 @@ function Encounter(encounterObj){
 	this.load = function(){
 		obj.enemies.forEach(function(enemy){
 			switch(enemy.type){
-				case "basic":
-					this.enemies.push(new Enemy(enemy.position,enemy.angle));
+				case "light":
+					this.enemies.push(new lightEnemy(enemy.position,enemy.angle));
+				break;
+				case "mid":
+					this.enemies.push(new midEnemy(enemy.position,enemy.angle));
+				break;
+				case "heavy":
+					this.enemies.push(new heavyEnemy(enemy.position,enemy.angle));
 				break;
 			}
 		}.bind(this));
@@ -28,6 +34,9 @@ function Encounter(encounterObj){
 			switch(object.type){
 				case "asteroid":
 					this.environmentObjects.push(new DestructibleObject(object.position,object.angle));
+				break;
+				case "debris":
+
 				break;
 			}
 		}.bind(this));
@@ -73,6 +82,7 @@ function GameObject(){
 	this.onCollision = function(){
 
 	};
+	solus.collision.addObject(this);
 	
 }
 
@@ -87,23 +97,27 @@ function IndestructibleObject(position, angle){
 
 // base enemy constructor
 function Enemy(position, angle){
+	GameObject.call(this);
+	this.state = "passive";
 
-	var maxSpeed = 10;
-
-	this.sprite = solus.renderer.createBasicEnemy();
 	if(position)
 		this.position = position;
 	if(angle)
 		this.angle = angle;
+	this.ai = function(player,state){
+		
+	};
+
 	this.update = function(player){
-		var seekForce = seek.call(this, player.position);
-		this.acceleration = vectorAdd(this.acceleration, seekForce);
+		
+		this.ai(player);
 		this.acceleration.clampLength(0,.1);
 		this.velocity = vectorAdd(this.acceleration, this.velocity);
-		this.velocity.clampLength(0, maxSpeed);
+		this.velocity.clampLength(0, this.maxSpeed);
 
 		this.position = vectorAdd(this.velocity, this.position);
-		this.angle = this.velocity.getAngle();
+		if(this.velocity.getLength() !== 0)
+			this.angle = this.velocity.getAngle();
 		solus.renderer.updateObject(this.sprite, this.position, this.angle);
 	}
 	this.destroy = function(){
@@ -115,24 +129,67 @@ function Enemy(position, angle){
 		console.log('game object is colliding');
 		//this.destroy();
 	};
-	solus.collision.addObject(this);
 }
 
 
+function lightEnemy(position, angle){
+	Enemy.call(this,position,angle);
+	this.sprite = solus.renderer.createLightEnemy();
+	this.maxSpeed = 7;
+	this.visibilityAngle = 0;
 
-Enemy.prototype = new GameObject();
+	this.ai = function(player){
+		this.acceleration.x = 0;
+		this.acceleration.y = 0;
+		
+		switch(this.state){
+			case "passive":
+				if(detect.call(this, player))
+					this.state = "pursuing";
+			break;
+			case "pursuing":
+				var pursueForce = pursue.call(this, player.position);
+				this.acceleration = vectorAdd(this.acceleration, pursueForce);
+			break;
+			case "pinning":
+
+			break;
+			case "searching":
+
+			break;
+		}
+		
+	};
+
+}
+
+function midEnemy(position,angle){
+	Enemy.call(this,position,angle);
+	this.sprite = solus.renderer.createMidEnemy();
+	this.maxSpeed = 3;
+
+}
+
+function heavyEnemy(position,angle){
+	Enemy.call(this,position,angle);
+	this.sprite = solus.renderer.createHeavyEnemy();
+	this.maxSpeed = 1;
+}
+
+
 Enemy.prototype.constructor = Enemy;
 
 
 // general AI functions
 
-// moves smoothly in a random direction
-function wander(){
+// canvasses a given area trying to make visual contact with the player.
+function search(cluePoint){
+
 
 }
 
-// maneuvers towards an object
-function seek(point){
+// maneuvers towards an object, but does not collide with it
+function pursue(point){
 	var toVec = vectorSubtract(point, this.position);
 	var force = vectorSubtract(toVec, this.velocity);
 	return force;
@@ -143,12 +200,38 @@ function avoid(object){
 
 }
 
-// maneuvers to turn and face given object
+// maneuvers to turn and face given object, where "face" might be slightly misleading (might be pointing a weapon at them depending on type of ship)
 function target(object){
 
 }
 
-// checks to see if there are detectable nearby objects
-function detect(objects){
+// checks to see if the parameter object is detectable
+// (ie visible and nearby, or something similar)
+function detect(object){
+
+	// is it in front of us?
+	var front = getUnitVectorFromAngle(this.angle);
+	var right = getUnitVectorFromAngle(this.angle-Math.PI/2);
+	var toVec = vectorSubtract(object.position, this.position).normalized(); 	// normalizing so the dot product is just cos(theta)
+	 																		  	// where theta is the angle from our forward vector
+	var frontDot = dotProduct(front,toVec);
+	var sideDot  = dotProduct(right,toVec);
+
+	// if in front of us
+	if(frontDot > 0){
+		// if within visibility
+		var angle = Math.acos(sideDot);
+		if(angle >= this.visibilityAngle && angle <= Math.PI - this.visibilityAngle){
+			return true;
+		}
+
+		return false;
+	}
 
 }
+
+// resets detection and returns to formation
+function abandon(){
+
+}
+
