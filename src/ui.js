@@ -35,14 +35,12 @@ solus.ui = (function(){
 		quoteAttrib: undefined,
 		quotes: [],
 		show: function(){
-
+			var quote = quotes[Math.floor(Math.random()*items.length)];
+			this.quoteText = quotes.text;
+			this.quoteAttrib = quotes.attribution;
 			this.element.style.display = "block";
 			this.element.style.opacity = 1;
 		},
-		hide: function(){
-			this.element.style.opacity = 0;
-			window.setTimeout(function(){this.element.style.display = "none";}.bind(this), 200);
-		}
 	};
 
 	obj.hud = {

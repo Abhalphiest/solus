@@ -109,6 +109,13 @@ solus.main =(function(){
 			currentEncounter = tutorial;
 		};
 
+
+		obj.gameOver = function(){
+			
+			if(animationRequestId){
+			window.cancelAnimationFrame(animationRequestId); 
+			animationRequestId = undefined;
+		}
 		var bgIndex = 1;
 		obj.update = function(progress, player){
 			//console.log(progress);
@@ -332,7 +339,7 @@ solus.main =(function(){
 
 			},
 			onCollision: function(object){
-
+				solus.main.gameOver();
 			}
 		};
 		
