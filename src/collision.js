@@ -56,15 +56,13 @@ solus.collision = (function (){
 						if(checkPointCollision(projectile.position, collider)){
 							projectile.onCollision();
 							object.onCollision();
-							console.log("collision detected");
 						}
 					break;
 
 					 case "laser":
 					 	if(checkLineCollision(projectile.position, projectile.endPoint,collider)){
-					// 		projectile.onCollision();
+					 		projectile.onCollision();
 					 		object.onCollision();
-							console.log("collision detected");
 					 	}
 					 break;
 
@@ -86,9 +84,8 @@ solus.collision = (function (){
 					vertex.y += object2.position.y;
 				});
 				if(checkObjectCollision(collider, collider2)){
-					console.log('collision');
-					//object.onCollision();
-					//object2.onCollision();
+					object.onCollision();
+					object2.onCollision();
 				}
 			}
 
@@ -128,8 +125,6 @@ solus.collision = (function (){
 			if(intersects(minpoint,point,collider[i], nextpoint))
 				intersectsCount++;
 		}
-
-		//console.log(intersectsCount);
 
 		return intersectsCount % 2 != 0;
 	}

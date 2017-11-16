@@ -66,6 +66,7 @@ solus.main =(function(){
 			this.gameState = GameState.GAMEPLAY; 
 			solus.ui.pauseScreen.hide();
 			if(!animationRequestId){
+				console.log('resuming');
 				animationRequestId = window.requestAnimationFrame(this.update.bind(this));
 			}
 		}
@@ -84,11 +85,27 @@ solus.main =(function(){
 	
 
 	mainobj.update = function(){
+		if(this.gameState != GameState.GAMEPLAY)
+			return;
 		player.update();
 		this.encounters.update(player.position.x, player);
 		solus.collision.update();
 		solus.renderer.render();
 		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
+	};
+
+	mainobj.gameOver = function(){
+			
+		this.gameState = GameState.GAMEOVER;
+		// stop updating, the game is over
+		if(animationRequestId){
+			console.log("cancelling animation");
+			window.cancelAnimationFrame(animationRequestId); 
+			animationRequestId = undefined;
+		}
+
+		solus.ui.gameOverScreen.show();
+		debugger;
 	};
 
 	// ENCOUNTER MANAGEMENT
@@ -105,17 +122,10 @@ solus.main =(function(){
 		};
 
 		obj.startEncounter = function(){
-			tutorial.load();
+			tutorial.load(2000);
 			currentEncounter = tutorial;
 		};
 
-
-		obj.gameOver = function(){
-			
-			if(animationRequestId){
-			window.cancelAnimationFrame(animationRequestId); 
-			animationRequestId = undefined;
-		}
 		var bgIndex = 1;
 		obj.update = function(progress, player){
 			//console.log(progress);
@@ -336,10 +346,10 @@ solus.main =(function(){
 
 			},
 			takeDamage: function(damage){
-
+				solus.main.gameOver();
 			},
 			onCollision: function(object){
-				solus.main.gameOver();
+				this.takeDamage();
 			}
 		};
 		

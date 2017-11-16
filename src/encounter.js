@@ -16,8 +16,9 @@ function Encounter(encounterObj){
 	this.enemies = [];
 	this.environmentObjects = [];
 	this.backgroundIndex = 0;
-	this.load = function(){
+	this.load = function(progress){
 		obj.enemies.forEach(function(enemy){
+			enemy.position.x += progress;
 			switch(enemy.type){
 				case "light":
 					this.enemies.push(new lightEnemy(enemy.position,enemy.angle));
@@ -31,6 +32,8 @@ function Encounter(encounterObj){
 			}
 		}.bind(this));
 		obj.objects.forEach(function(object){
+
+			object.position.x += progress;
 			switch(object.type){
 				case "asteroid":
 					this.environmentObjects.push(new DestructibleObject(object.position,object.angle));
@@ -99,7 +102,7 @@ function IndestructibleObject(position, angle){
 function Enemy(position, angle){
 	GameObject.call(this);
 	this.state = "passive";
-
+	var health = 3;
 	if(position)
 		this.position = position;
 	if(angle)
@@ -109,7 +112,10 @@ function Enemy(position, angle){
 	};
 
 	this.update = function(player){
-		
+		if(health <= 0){
+			this.destroy();
+			return;
+		}
 		this.ai(player);
 		this.acceleration.clampLength(0,.1);
 		this.velocity = vectorAdd(this.acceleration, this.velocity);
@@ -126,8 +132,7 @@ function Enemy(position, angle){
 		this.active = false;
 	}
 	this.onCollision = function(object){
-		console.log('game object is colliding');
-		//this.destroy();
+		health--;
 	};
 }
 
@@ -136,7 +141,7 @@ function lightEnemy(position, angle){
 	Enemy.call(this,position,angle);
 	this.sprite = solus.renderer.createLightEnemy();
 	this.maxSpeed = 7;
-	this.visibilityAngle = 0;
+	this.visibilityAngle = Math.PI/8; //near perfect front/side visibility
 
 	this.ai = function(player){
 		this.acceleration.x = 0;
@@ -212,8 +217,12 @@ function detect(object){
 	// is it in front of us?
 	var front = getUnitVectorFromAngle(this.angle);
 	var right = getUnitVectorFromAngle(this.angle-Math.PI/2);
-	var toVec = vectorSubtract(object.position, this.position).normalized(); 	// normalizing so the dot product is just cos(theta)
-	 																		  	// where theta is the angle from our forward vector
+	var toVec = vectorSubtract(object.position, this.position)
+	if(toVec.getLength() >= 300)
+		return false;
+
+	toVec = toVec.normalized(); 	// normalizing so the dot product is just cos(theta)
+	 								// where theta is the angle from our forward vector
 	var frontDot = dotProduct(front,toVec);
 	var sideDot  = dotProduct(right,toVec);
 

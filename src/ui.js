@@ -35,9 +35,10 @@ solus.ui = (function(){
 		quoteAttrib: undefined,
 		quotes: [],
 		show: function(){
-			var quote = quotes[Math.floor(Math.random()*items.length)];
-			this.quoteText = quotes.text;
-			this.quoteAttrib = quotes.attribution;
+			var quote = this.quotes[Math.floor(Math.random()*this.quotes.length)];
+			console.log(quote);
+			this.quoteText.innerText = quote.quote;
+			this.quoteAttrib.innerText = quote.attribution;
 			this.element.style.display = "block";
 			this.element.style.opacity = 1;
 		},
@@ -91,6 +92,8 @@ solus.ui = (function(){
 		this.optionsMenu = new Menu("#optionsMenu");
 		this.pauseScreen.element = document.querySelector("#pauseScreen");
 		this.gameOverScreen.element = document.querySelector("#gameOverScreen");
+		this.gameOverScreen.quoteText = document.querySelector("#quoteText");
+		this.gameOverScreen.quoteAttrib = document.querySelector("#quoteAttrib");
 		this.hud.element = document.querySelector("#hud");
 		this.textOverlay.element = document.querySelector("#textOverlay");
 		this.controlsScreen = new Menu("#controlsScreen");
@@ -142,6 +145,7 @@ solus.ui = (function(){
 
 		solus.loader.loadJSON("assets/strings/quotes.json", function(data){
 				this.gameOverScreen.quotes = data.quotes;
+				console.log(data.quotes);
 		}.bind(this));
 	}.bind(obj));
 

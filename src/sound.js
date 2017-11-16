@@ -16,41 +16,49 @@ solus.sound = (function(){
 	var backgroundMusic = undefined;
 	var ambientBackground = undefined;
 	var soundEffects = undefined;
+	var soundEffectsEnabled = true;
 
 	obj.toggleBGMusic = function(){
-		backgroundMusic.play();
+		if(backgroundMusic.paused)
+			backgroundMusic.play();
+		else
+			backgroundMusic.pause();
 	};
 
-	obj.setBGMusicVolume = function(){
-
+	obj.setBGMusicVolume = function(value){
+		backgroundMusic.volume = value;
 	};
 
+	// currently unused
 	obj.setNextBGMusic = function(path){
 
 	};
 
 	obj.toggleAmbientSound = function(){
-
+		if(ambientBackground.paused)
+			ambientBackground.play();
+		else
+			ambientBackground.pause();
 	};
 
-	obj.setAmbientSoundVolume = function(){
-
+	obj.setAmbientSoundVolume = function(value){
+		ambientBackground.volume = value;
 	};
 
 	obj.toggleSoundEffects = function(){
-
+		soundEffectsEnabled = !soundEffectsEnabled;
 	};
 
-	obj.setSoundEffectVolume = function(){
-
+	obj.setSoundEffectVolume = function(value){
+		soundEffects.volume = value;
 	};
 
 	obj.registerSoundEffect = function(name, path){
-
+		
 	};
 
 	obj.triggerSoundEffect = function(name){
-
+		
 	};
 
 	addOnLoadEvent(function(){
