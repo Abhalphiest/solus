@@ -100,7 +100,6 @@ solus.main =(function(){
 		this.gameState = GameState.GAMEOVER;
 		// stop updating, the game is over
 		if(animationRequestId){
-			console.log("cancelling animation");
 			window.cancelAnimationFrame(animationRequestId); 
 			animationRequestId = undefined;
 		}
@@ -129,7 +128,6 @@ solus.main =(function(){
 
 		var bgIndex = 1;
 		obj.update = function(progress, player){
-			//console.log(progress);
 			if(progress > currentProgress);
 				currentProgress = progress;
 

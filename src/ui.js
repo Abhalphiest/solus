@@ -36,7 +36,6 @@ solus.ui = (function(){
 		quotes: [],
 		show: function(){
 			var quote = this.quotes[Math.floor(Math.random()*this.quotes.length)];
-			console.log(quote);
 			this.quoteText.innerText = quote.quote;
 			this.quoteAttrib.innerText = quote.attribution;
 			this.element.style.display = "block";
@@ -109,7 +108,6 @@ solus.ui = (function(){
 			this.gameMenu.close();
 		}.bind(this);
 		document.querySelector("#gameOptions").onclick = function(){
-			console.log('clicked');
 			this.optionsMenu.show();
 		}.bind(this);
 		document.querySelector("#mainOptions").onclick = function(){
@@ -151,15 +149,13 @@ solus.ui = (function(){
 			solus.sound.setSoundEffectVolume(this.value);
 		};
 
-		document.querySelector("#particleOptions").querySelector("input").onchange = function(){
-			solus.renderer.setParticlesEnabled(this.checked);
-			console.log(this.checked);
-		}
+		// document.querySelector("#particleOptions").querySelector("input").onchange = function(){
+		// 	solus.renderer.setParticlesEnabled(this.checked);
+		// }
 
 
 		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 
 
-			console.log(this.currentMenu);
 			if(this.currentMenu && this.currentMenu != this.mainMenu){
 				this.currentMenu.close();
 			}
@@ -171,7 +167,6 @@ solus.ui = (function(){
 
 		solus.loader.loadJSON("assets/strings/quotes.json", function(data){
 				this.gameOverScreen.quotes = data.quotes;
-				console.log(data.quotes);
 		}.bind(this));
 	}.bind(obj));
 

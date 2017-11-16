@@ -26,20 +26,21 @@ solus.renderer = (function(){
 
 
     var BACKGROUND_WIDTH = 1920;
-    var background = {
+    var background = {  //for scrolling background, see renderer.update for use
         index: 2,
         transitioning: false,
         transitionIndex: -1,
         transitionTexture: "",
     }
     var backgroundPanels = [];
-    var lightEnemy = {};
+    var lightEnemy = {}; // these objects all hold texture + collider + other stuff loaded from json
     var midEnemy = {};
     var heavyEnemy = {};
     var bullet = {};
 
     var debugRenderer;
-    var particlesEnabled = true;
+    var particlesEnabled = true; // not actually used at all right now, was originally going to be in the options screen for performance considerations 
+                                // (these are EXPENSIVE if you get the canvas renderer for some reason)
 
     function init(){
 
@@ -65,6 +66,8 @@ solus.renderer = (function(){
         playerEmitterContainer = new PIXI.Container();
         playerEmitterContainer.zIndex = 1;
 
+        // debugRenderer is only for debug drawing, like drawing
+        // hitboxes and target lines and things of that nature
         debugRenderer = new PIXI.Graphics();
         debugRenderer.zIndex = 2;
         displayStage.addChild(debugRenderer);
@@ -143,13 +146,16 @@ solus.renderer = (function(){
 
         playerEmitter.emit = false;
 
+        // displayStage is now depth sorted so that things are drawn on top of each
+        // other correctly without having to care when exactly they are added
+        // sorting on adding an asset is better than sorting every frame or something,
+        // but certainly could have consolidated some of the sorts, oh well
         displayStage.updateLayersOrder = function () {
              this.children.sort(function(a,b) {
                 a.zIndex = a.zIndex || 0;
                 b.zIndex = b.zIndex || 0;
                 return a.zIndex - b.zIndex;
             });
-             // console.log(this.children);
         };
 
         displayStage.addChild(playerEmitterContainer);
@@ -165,15 +171,19 @@ solus.renderer = (function(){
     var elapsed = Date.now();
     obj.updatePlayerSprite = function(x,y,rotation, emit){
 
-        playerContainer.position.set(x,y);
+        playerContainer.position.set(x,y); // move the player
         playerContainer.rotation = rotation;
-        displayStage.pivot.x = x;
+        displayStage.pivot.x = x;       // make the screen center on the player
         displayStage.pivot.y = y;
         displayStage.position.x = pixiRenderer.width/2;
         displayStage.position.y = pixiRenderer.height/2;
+
+        // delta time for the particle emitter
         var now = Date.now();
+
+        // particle trail for the player
         if(playerEmitter && particlesEnabled){
-            if(!emit && playerEmitter.emit){
+            if(!emit && playerEmitter.emit){   // if we've stopped emitting (accelerating/moving) but the emitter is still going, kill it off slowly
                 playerEmitterContainer.alpha *= .9;
                 if(playerEmitterContainer.alpha <= 0){
                     playerEmitterContainer.alpha = 0;
@@ -181,20 +191,22 @@ solus.renderer = (function(){
                     playerEmitter.emit = false;
                 }
             }
-            else if(emit){
+            else if(emit){ // otherwise go nuts, emit stuff, whatever
                 playerEmitter.emit = true;
                 playerEmitter.resetPositionTracking()
                 playerEmitterContainer.alpha = 1;
             }
+
             playerEmitter.updateSpawnPos(x,y);
             playerEmitter.rotation = rotation;
+            // offsetting the particle system from player center so it appears to be coming from the rear engine
             var offsetVector = getUnitVectorFromAngle(rotation+Math.PI).setLength(35);
             playerEmitter.spawnCircle.x = offsetVector.x;
             playerEmitter.spawnCircle.y = offsetVector.y;
             playerEmitter.update((now - elapsed) * 0.001);
             
         }
-        else if(playerEmitter){
+        else if(playerEmitter){ // particles have been disabled
             playerEmitter.cleanup();
         }
         elapsed = now;
@@ -237,6 +249,9 @@ solus.renderer = (function(){
         laser.lineTo(endpoint.x,endpoint.y);
     }
 
+
+    // all of the create enemy functions basically just spawn a sprite for the enemy, add it to the render stage,
+    // attach its' collider, and send it back
     obj.createLightEnemy = function(){
         var sprite = new PIXI.Sprite(lightEnemy.texture);
         sprite.zIndex = 2;
@@ -298,7 +313,8 @@ solus.renderer = (function(){
     }
 
 
-
+    // basically the renderer update
+    // handles the background, renders the displayStage, does little else of note
     obj.render = function(){
         // update the background
         if(displayStage.pivot.x - backgroundPanels[background.index].position.x >= BACKGROUND_WIDTH){
@@ -309,10 +325,8 @@ solus.renderer = (function(){
             var refreshIndex = (background.index + Math.floor(backgroundPanels.length/2))%backgroundPanels.length;
             backgroundPanels[refreshIndex].position.x += backgroundPanels.length*BACKGROUND_WIDTH;
             if(background.transitioning){
-                //console.log('changing background');
                 backgroundPanels[(background.index+1)%backgroundPanels.length].texture = background.transitionTexture;
                 if((background.index+1)%backgroundPanels.length === background.transitionIndex){
-                    //console.log('end transition');
                     background.transitioning = false;
                 }
             }
@@ -324,6 +338,9 @@ solus.renderer = (function(){
         debugRenderer.clear();
     };
 
+
+    // this is called when the json file with our sprites has finished loading
+    // kicks off asset loading for GPU/PIXI
     var setUpSprites= function(assets){
         // load the sprites
         PIXI.loader
@@ -408,6 +425,8 @@ solus.renderer = (function(){
     };
 
 
+    // changes the background, but starting on a panel that is not yet visible to make it smooth
+    // partially hard coded right now, would be updated to have transitions between all of them
     obj.changeBackground = function(index){
         background.transitioning = true;
         background.transitionIndex = (background.index+1)%backgroundPanels.length;

@@ -60,7 +60,7 @@ solus.loader = function(){
 		request.responseType = 'json';
 		request.send();
 		request.onload = onResponseReceived;
-		request.onerror = function(){console.log("error loading "+ filepath);};
+		//request.onerror = function(){console.log("error loading "+ filepath);};
 		
 
 		function onResponseReceived(){
@@ -72,12 +72,10 @@ solus.loader = function(){
 
 	obj.loadAsset = function(resource, next){
 		assetsStarted = true;
-		//console.log('loading asset');
 		assetsLoading++;
 		next();
 	}
 	obj.finalizeAsset = function(){
-		//console.log('finalizing asset');
 		assetsLoading--;
 	};
 
