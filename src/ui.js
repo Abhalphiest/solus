@@ -127,8 +127,34 @@ solus.ui = (function(){
 		}.bind(this);
 
 		document.querySelector("#quitGame").onclick = function(){
-			//solus.main.clear
+			solus.main.gameOver();
 		};
+
+		// set up options menu inputs
+		document.querySelector("#bgMusicOptions").querySelector("input").oninput = function(){
+			solus.sound.setBGMusicVolume(this.value);
+		};
+
+		document.querySelector("#bgMusicOptions").querySelector("input").onblur = function(){
+			solus.sound.pauseBGMusic();
+		};
+
+		document.querySelector("#bgMusicOptions").querySelector("input").onfocus = function(){
+			solus.sound.resumeBGMusic();
+		};
+
+		document.querySelector("#ambientOptions").querySelector("input").oninput = function(){
+			solus.sound.setAmbientSoundVolume(this.value);
+		};
+
+		document.querySelector("#soundEffectOptions").querySelector("input").oninput = function(){
+			solus.sound.setSoundEffectVolume(this.value);
+		};
+
+		document.querySelector("#particleOptions").querySelector("input").onchange = function(){
+			solus.renderer.setParticlesEnabled(this.checked);
+			console.log(this.checked);
+		}
 
 
 		solus.input.setKeyDownCallback(KEYS.ESCAPE, function(){ 

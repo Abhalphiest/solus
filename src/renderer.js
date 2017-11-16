@@ -39,6 +39,7 @@ solus.renderer = (function(){
     var bullet = {};
 
     var debugRenderer;
+    var particlesEnabled = true;
 
     function init(){
 
@@ -158,6 +159,8 @@ solus.renderer = (function(){
 
     obj.getPlayerSprite = function(){return playerSprite;};
 
+    obj.setParticlesEnabled = function(value){particlesEnabled = value;};
+
     // TODO: make dt function, will want it elsewhere anyways, probably? If I ever get around to variable timestep physics?
     var elapsed = Date.now();
     obj.updatePlayerSprite = function(x,y,rotation, emit){
@@ -169,7 +172,7 @@ solus.renderer = (function(){
         displayStage.position.x = pixiRenderer.width/2;
         displayStage.position.y = pixiRenderer.height/2;
         var now = Date.now();
-        if(playerEmitter){
+        if(playerEmitter && particlesEnabled){
             if(!emit && playerEmitter.emit){
                 playerEmitterContainer.alpha *= .9;
                 if(playerEmitterContainer.alpha <= 0){
@@ -190,6 +193,9 @@ solus.renderer = (function(){
             playerEmitter.spawnCircle.y = offsetVector.y;
             playerEmitter.update((now - elapsed) * 0.001);
             
+        }
+        else if(playerEmitter){
+            playerEmitter.cleanup();
         }
         elapsed = now;
     };

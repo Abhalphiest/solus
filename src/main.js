@@ -69,8 +69,8 @@ solus.main =(function(){
 			if(!animationRequestId){
 				animationRequestId = window.requestAnimationFrame(this.update.bind(this));
 			}
+			solus.sound.resumeBGMusic();
 		}
-		solus.sound.resumeBGMusic();
 	};
 	mainobj.openMenu = function(){
 		this.pause();

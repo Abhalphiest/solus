@@ -197,9 +197,12 @@ body{
 
 #optionsMenu section{
 	text-align: left;
+	width: 40%;
 }
 
-
+#optionsMenu input[type=range]{
+	float:right;
+}
 
 #creditsScreen{
 	font-family: 'Gruppo', sans-serif;
@@ -216,7 +219,7 @@ body{
 
 input[type=range] {
   -webkit-appearance: none;
-  width: 30%;
+  width: 50%;
   margin: 1.65px 0;
 }
 input[type=range]:focus {
