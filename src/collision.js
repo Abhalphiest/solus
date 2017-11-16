@@ -62,7 +62,8 @@ solus.collision = (function (){
 					 case "laser":
 					 	if(checkLineCollision(projectile.position, projectile.endPoint,collider)){
 					 		projectile.onCollision();
-					 		object.onCollision();
+					 		if(!object.player) //horrible last minute hack
+					 			object.onCollision(); 
 					 	}
 					 break;
 

@@ -13,20 +13,33 @@ var solus = solus || {};
 solus.sound = (function(){
 
 	var obj = {};
-	var backgroundMusic = undefined;
-	var ambientBackground = undefined;
-	var soundEffects = undefined;
-	var soundEffectsEnabled = true;
-
-	obj.toggleBGMusic = function(){
-		if(backgroundMusic.paused)
-			backgroundMusic.play();
-		else
-			backgroundMusic.pause();
+	var backgroundMusic = {
+		element:undefined,
+		paused:false
+	};
+	
+	var ambientBackground  = {
+		element:undefined,
+		paused:false
+	};
+	var soundEffects  = {
+		element:undefined,
+		paused:false
 	};
 
+	obj.pauseBGMusic = function(){
+		backgroundMusic.paused = true;
+		backgroundMusic.element.pause();
+	};
+
+	obj.resumeBGMusic = function(){
+		backgroundMusic.paused = false;
+		backgroundMusic.element.play();
+	};
+
+
 	obj.setBGMusicVolume = function(value){
-		backgroundMusic.volume = value;
+		backgroundMusic.element.volume = value;
 	};
 
 	// currently unused
@@ -34,23 +47,22 @@ solus.sound = (function(){
 
 	};
 
-	obj.toggleAmbientSound = function(){
-		if(ambientBackground.paused)
-			ambientBackground.play();
-		else
-			ambientBackground.pause();
+	obj.pauseAmbientSound = function(){
+		ambientBackground.paused = true;
+		ambientBackground.element.pause();
+	};
+
+	obj.resumeAmbientSound = function(){
+		ambientBackground.paused = false;
+		ambientBackground.element.play();
 	};
 
 	obj.setAmbientSoundVolume = function(value){
-		ambientBackground.volume = value;
-	};
-
-	obj.toggleSoundEffects = function(){
-		soundEffectsEnabled = !soundEffectsEnabled;
+		ambientBackground.element.volume = value;
 	};
 
 	obj.setSoundEffectVolume = function(value){
-		soundEffects.volume = value;
+		soundEffects.element.volume = value;
 	};
 
 	obj.registerSoundEffect = function(name, path){
@@ -63,23 +75,23 @@ solus.sound = (function(){
 
 	addOnLoadEvent(function(){
 
-		backgroundMusic = document.createElement("audio");
-		ambientBackground = document.createElement("audio");
-		soundEffects = document.createElement("audio");
-		backgroundMusic.volume = .5; // default value? until options are set up
-		backgroundMusic.src = "assets/audio/emptyReflections.mp3";
-		backgroundMusic.addEventListener('ended', function() {
+		backgroundMusic.element = document.createElement("audio");
+		ambientBackground.element = document.createElement("audio");
+		soundEffects.element = document.createElement("audio");
+		backgroundMusic.element.volume = .5; // default value? until options are set up
+		backgroundMusic.element.src = "assets/audio/emptyReflections.mp3";
+		backgroundMusic.element.addEventListener('ended', function() {
     		this.currentTime = 0;
     		this.play();
 		}, false);
 
-		ambientBackground.volume = .5; // default value? until options are set up
-		ambientBackground.src = "assets/audio/ambient.mp3";
-		ambientBackground.addEventListener('ended', function() {
+		ambientBackground.element.volume = .5; // default value? until options are set up
+		ambientBackground.element.src = "assets/audio/ambient.mp3";
+		ambientBackground.element.addEventListener('ended', function() {
     		this.currentTime = 0;
     		this.play();
 		}, false);
-		ambientBackground.play();
+		ambientBackground.element.play();
 	});
 	return obj;
 

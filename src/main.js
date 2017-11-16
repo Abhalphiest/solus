@@ -46,7 +46,7 @@ solus.main =(function(){
 
 	mainobj.start = function(){
 		this.gameState = GameState.GAMEPLAY;
-		solus.sound.toggleBGMusic();
+		solus.sound.resumeBGMusic();
 		animationRequestId = window.requestAnimationFrame(this.update.bind(this));
 	}
 
@@ -60,16 +60,17 @@ solus.main =(function(){
 			window.cancelAnimationFrame(animationRequestId); 
 			animationRequestId = undefined;
 		}
+		solus.sound.pauseBGMusic();
 	};
 	mainobj.resume = function(){
-		if(this.gameState !== GameState.MENU){
+		if(this.gameState !== GameState.MENU && this.gameState != GameState.GAMEOVER){
 			this.gameState = GameState.GAMEPLAY; 
 			solus.ui.pauseScreen.hide();
 			if(!animationRequestId){
-				console.log('resuming');
 				animationRequestId = window.requestAnimationFrame(this.update.bind(this));
 			}
 		}
+		solus.sound.resumeBGMusic();
 	};
 	mainobj.openMenu = function(){
 		this.pause();
@@ -79,8 +80,8 @@ solus.main =(function(){
 		this.gameState = GameState.PAUSED;
 		this.resume();
 	}
-	window.onblur = mainobj.pause.bind(mainobj);
-	window.onfocus = mainobj.resume.bind(mainobj);
+	window.onblur = function(){solus.sound.pauseAmbientSound(); mainobj.pause();};
+	window.onfocus = function(){solus.sound.resumeAmbientSound(); mainobj.resume();};
 
 	
 
@@ -164,6 +165,7 @@ solus.main =(function(){
 		var MAX_LASER_POWER = 100;
 		var maxSpeed = 10;
 		var obj = {
+			player:true,
 			position: new Vector(0, 500),
 			velocity: new Vector(),
 			acceleration: new Vector(),
@@ -297,16 +299,16 @@ solus.main =(function(){
 					return;
 				switch(this.activeCannon){
 					case CannonType.FRONT:
-						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle).scale(16)), getUnitVectorFromAngle(this.angle)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle).scale(32)), getUnitVectorFromAngle(this.angle)));
 					break;
 
 					case CannonType.MID:
-						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  + Math.PI/2).scale(16)), getUnitVectorFromAngle(this.angle + Math.PI/2)));
-						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  - Math.PI/2).scale(16)), getUnitVectorFromAngle(this.angle - Math.PI/2)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  + Math.PI/2).scale(32)), getUnitVectorFromAngle(this.angle + Math.PI/2)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle  - Math.PI/2).scale(32)), getUnitVectorFromAngle(this.angle - Math.PI/2)));
 					break;
 
 					case CannonType.BACK:
-						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle+Math.PI).scale(16)), getUnitVectorFromAngle(this.angle + Math.PI)));
+						this.bullets.push(new Bullet(vectorAdd(this.position, getUnitVectorFromAngle(this.angle+Math.PI).scale(32)), getUnitVectorFromAngle(this.angle + Math.PI)));
 					break;
 				}
 			},

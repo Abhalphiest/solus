@@ -328,6 +328,7 @@ solus.renderer = (function(){
             .add("assets/environments/background2.jpg")
             .add("assets/environments/background1.jpg")
             .add("assets/environments/backgroundtransition12.jpg")
+            .add("assets/environments/tutorialpanel.jpg")
             .add(assets.spritePath + assets.bullet.sprite)
             .pre(solus.loader.loadAsset)
             .on("progress", solus.loader.finalizeAsset)
@@ -377,7 +378,7 @@ solus.renderer = (function(){
             backgroundPanels[1].pivot.y = .5;
             backgroundPanels[1].position.set(-3*BACKGROUND_WIDTH/2,-50000);
             displayStage.addChild(backgroundPanels[1]);
-            backgroundPanels[2] = new PIXI.extras.TilingSprite(pixiResources["assets/environments/background1.jpg"].texture, BACKGROUND_WIDTH , 100000);
+            backgroundPanels[2] = new PIXI.extras.TilingSprite(pixiResources["assets/environments/tutorialpanel.jpg"].texture, BACKGROUND_WIDTH , 100000);
             backgroundPanels[2].zIndex = -1;
             backgroundPanels[2].pivot.x = .5;
             backgroundPanels[2].pivot.y = .5;
